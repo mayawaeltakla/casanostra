@@ -1,0 +1,117 @@
+#!/bin/bash
+# سكريبت لدمج كل الكود في ملف واحد كبير
+OUTPUT="/home/z/my-project/download/CASANOSTRA-FULL-CODE.txt"
+> "$OUTPUT"
+
+echo "================================================================" >> "$OUTPUT"
+echo "  CASANOSTRA - Full Source Code (Single File)" >> "$OUTPUT"
+echo "  Generated: $(date)" >> "$OUTPUT"
+echo "  Total files: 168" >> "$OUTPUT"
+echo "================================================================" >> "$OUTPUT"
+echo "" >> "$OUTPUT"
+
+# قائمة الملفات النصية المراد تضمينها (بترتيب منطقي)
+FILES=(
+  "package.json"
+  "tsconfig.json"
+  "next.config.mjs"
+  "tailwind.config.ts"
+  "next-env.d.ts"
+  "postcss.config.mjs"
+  ".env"
+  ".gitignore"
+  "Caddyfile"
+  "prisma/schema.prisma"
+  "src/app/globals.css"
+  "src/app/layout.tsx"
+  "src/app/page.tsx"
+  "src/app/api/route.ts"
+  # i18n
+  "src/i18n/messages.ts"
+  "src/i18n/page-messages.ts"
+  "src/i18n/request.ts"
+  # lib
+  "src/lib/locale-text.ts"
+  "src/lib/site-config.ts"
+  "src/lib/services.ts"
+  "src/lib/blog.ts"
+  "src/lib/whatsapp.ts"
+  "src/lib/utils.ts"
+  "src/lib/db.ts"
+  # components
+  "src/components/LanguageSwitcher.tsx"
+  "src/components/ThemeToggle.tsx"
+  "src/components/WhatsAppButton.tsx"
+  "src/components/BookingForm.tsx"
+  "src/components/layout/Header.tsx"
+  "src/components/layout/Footer.tsx"
+  # home components
+  "src/components/home/HeroSection.tsx"
+  "src/components/home/SubscriptionCard.tsx"
+  "src/components/home/StatsSection.tsx"
+  "src/components/home/ServicesGrid.tsx"
+  "src/components/home/WhyUs.tsx"
+  "src/components/home/FeaturedOffers.tsx"
+  "src/components/home/FAQSection.tsx"
+  "src/components/home/PromoVideos.tsx"
+  "src/components/home/BlogSection.tsx"
+  "src/components/home/Testimonials.tsx"
+  "src/components/home/CTABanner.tsx"
+  "src/components/home/OffersSection.tsx"
+  # pages
+  "src/app/about/page.tsx"
+  "src/app/about/layout.tsx"
+  "src/app/about/AboutContent.tsx"
+  "src/app/blog/page.tsx"
+  "src/app/blog/BlogContent.tsx"
+  "src/app/blog/[slug]/page.tsx"
+  "src/app/contact/page.tsx"
+  "src/app/contact/ContactContent.tsx"
+  "src/app/faq/page.tsx"
+  "src/app/faq/FaqContent.tsx"
+  "src/app/help/page.tsx"
+  "src/app/help/HelpContent.tsx"
+  "src/app/offers/page.tsx"
+  "src/app/offers/OffersContent.tsx"
+  "src/app/plans/page.tsx"
+  "src/app/plans/PlansContent.tsx"
+  "src/app/privacy/page.tsx"
+  "src/app/privacy/PrivacyContent.tsx"
+  "src/app/quick-booking/page.tsx"
+  "src/app/quick-booking/QuickBookingContent.tsx"
+  "src/app/services/page.tsx"
+  "src/app/services/[slug]/page.tsx"
+  "src/app/terms/page.tsx"
+  "src/app/terms/TermsContent.tsx"
+  # hooks
+  "src/hooks/use-mobile.ts"
+  "src/hooks/use-toast.ts"
+  # public assets (text only)
+  "public/logo.svg"
+  "public/robots.txt"
+)
+
+# معالجة كل ملف
+for file in "${FILES[@]}"; do
+  if [ -f "/home/z/my-project/$file" ]; then
+    echo "" >> "$OUTPUT"
+    echo "================================================================" >> "$OUTPUT"
+    echo "FILE: $file" >> "$OUTPUT"
+    echo "Lines: $(wc -l < "/home/z/my-project/$file")" >> "$OUTPUT"
+    echo "================================================================" >> "$OUTPUT"
+    echo "" >> "$OUTPUT"
+    cat "/home/z/my-project/$file" >> "$OUTPUT"
+    echo "" >> "$OUTPUT"
+  fi
+done
+
+# عرض المعلومات النهائية
+echo ""
+echo "=== File created ==="
+ls -lh "$OUTPUT"
+echo ""
+echo "=== Total lines ==="
+wc -l "$OUTPUT"
+echo ""
+echo "=== Total size ==="
+du -h "$OUTPUT"
