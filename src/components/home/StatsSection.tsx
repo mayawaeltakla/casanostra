@@ -19,9 +19,9 @@ interface Stat {
 
 const stats: Stat[] = [
   { value: "95%", labelKey: "statsLabel1", percent: 95 },
-  { value: "10+", labelKey: "statsLabel2", percent: 85 },
-  { value: "500+", labelKey: "statsLabel3", percent: 90 },
-  { value: "24/7", labelKey: "statsLabel4", percent: 100 },
+  { value: "500+", labelKey: "statsLabel2", percent: 90 },
+  { value: "10+", labelKey: "statsLabel3", percent: 85 },
+  { value: "1000+", labelKey: "statsLabel4", percent: 100 },
 ];
 
 export function StatsSection() {

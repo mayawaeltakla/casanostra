@@ -1,5 +1,6 @@
 import { HeroSection } from "@/components/home/HeroSection";
 import { SubscriptionCard } from "@/components/home/SubscriptionCard";
+import { StatsSection } from "@/components/home/StatsSection";
 import { FeaturedOffers } from "@/components/home/FeaturedOffers";
 import { FAQSection } from "@/components/home/FAQSection";
 import { PromoVideos } from "@/components/home/PromoVideos";
@@ -23,6 +24,7 @@ export default function Home() {
     <>
       <HeroSection />
       <SubscriptionCard />
+      <StatsSection />
       <FeaturedOffers />
       <FAQSection />
       <PromoVideos />
