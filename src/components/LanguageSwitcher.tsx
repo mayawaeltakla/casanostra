@@ -32,6 +32,7 @@ function persistLocaleCookie(locale: string) {
 export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const locale = useLocale();
   const t = useTranslations("nav");
+  const tCommon = useTranslations("common");
   const pathname = usePathname();
   const router = useRouter();
   const direction = locale === "ar" ? "rtl" : "ltr";
@@ -46,11 +47,11 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const languageLabels = {
-    ar: t("arabic"),
-    en: t("english"),
-    tr: t("turkish"),
-    fr: t("french"),
-    ru: t("russian"),
+    ar: tCommon("arabic"),
+    en: tCommon("english"),
+    tr: tCommon("turkish"),
+    fr: tCommon("french"),
+    ru: tCommon("russian"),
   } as const;
   // اللغة المختارة حالياً (مستمَدة من locale المُمرَّر عبر next-intl)
   const selected =

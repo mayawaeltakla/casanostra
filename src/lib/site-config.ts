@@ -33,8 +33,8 @@ export const siteConfig = {
   social: {
     instagram: "https://www.instagram.com/casanostra.tr?stkn=NnJ1bmF5cjQwdG9h",
     facebook: "https://www.facebook.com/casanostra.tr",
-    twitter: "https://twitter.com/casanostra",
-    youtube: "https://youtube.com/@casanostra",
+    twitter: "https://x.com/casanostrtr",
+    youtube: "https://www.youtube.com/@casanostra-tr",
     tiktok: "https://www.tiktok.com/@casanostra847?_r=1&_t=ZS-9AMhT6XyJV3",
   },
 } as const;
