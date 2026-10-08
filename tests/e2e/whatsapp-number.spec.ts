@@ -21,23 +21,14 @@ test("WhatsApp entry points and booking requests use the official number in ever
   });
 
   for (const locale of locales) {
-    await page.context().clearCookies();
-    await page.context().addCookies([
-      {
-        name: "casanostra-locale",
-        value: locale,
-        url: baseURL,
-      },
-    ]);
-
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.goto(`/${locale}/`, { waitUntil: "domcontentloaded" });
     const homeTelephoneLinks = await page
       .locator('a[href^="tel:"]')
       .evaluateAll((links) => links.map((link) => link.getAttribute("href")));
     expect(homeTelephoneLinks.length, `${locale} home telephone links`).toBeGreaterThan(0);
     expect(homeTelephoneLinks.every((href) => href === officialTelephoneLink)).toBe(true);
 
-    await page.goto("/contact", { waitUntil: "domcontentloaded" });
+    await page.goto(`/${locale}/contact`, { waitUntil: "domcontentloaded" });
     const contactTelephoneLinks = await page
       .locator('a[href^="tel:"]')
       .evaluateAll((links) => links.map((link) => link.getAttribute("href")));
@@ -51,14 +42,16 @@ test("WhatsApp entry points and booking requests use the official number in ever
       expect(href).toMatch(whatsappLinkPattern);
     }
 
-    await page.goto("/help", { waitUntil: "domcontentloaded" });
+    await page.goto(`/${locale}/help`, { waitUntil: "domcontentloaded" });
     const helpTelephoneLinks = await page
       .locator('a[href^="tel:"]')
       .evaluateAll((links) => links.map((link) => link.getAttribute("href")));
     expect(helpTelephoneLinks.length, `${locale} help telephone links`).toBeGreaterThan(0);
     expect(helpTelephoneLinks.every((href) => href === officialTelephoneLink)).toBe(true);
 
-    await page.goto("/services/visa", { waitUntil: "domcontentloaded" });
+    await page.goto(`/${locale}/services/visa`, { waitUntil: "domcontentloaded" });
+    // الملء والنقر يحتاجان hydration مكتملاً — وإلا ضاعت القيم عند الربط.
+    await page.waitForLoadState("load");
     const form = page.locator("form").first();
     const phoneInputs = form.locator('input[type="tel"]');
     for (const phoneInput of await phoneInputs.all()) {

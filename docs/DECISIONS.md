@@ -8,9 +8,9 @@ The supported set is exactly Arabic, English, Turkish, French, and Russian. Chin
 
 Arabic is the canonical default locale and the only RTL locale. Other supported locales render LTR.
 
-## 3. Cookie-based locale switching
+## 3. URL-prefix locale routing without reloads
 
-The language picker writes `casanostra-locale` and reloads the page so server-rendered content re-resolves using the selected locale.
+Every locale has its own shareable URL (`/ar/...`, `/en/...`, ...). The language picker navigates client-side to the same path in the new locale — no full page reload. `src/proxy.ts` redirects unprefixed visits (e.g. `/`) using the `casanostra-locale` cookie or `accept-language`, and that cookie is kept in sync only for backward compatibility.
 
 ## 4. Static-first content model
 

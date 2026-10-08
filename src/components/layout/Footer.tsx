@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import {
   Phone,
@@ -111,7 +111,7 @@ export function Footer() {
           <div className="lg:col-span-1">
             <Link href="/" className="inline-flex mb-5 rounded-lg">
               <Image
-                src="/images/brand/logo-transparent.png"
+                src="/images/brand/logo-transparent.webp"
                 alt={siteConfig.name}
                 width={768}
                 height={768}
@@ -139,7 +139,7 @@ export function Footer() {
             <div key={column.title}>
               <h3 className="text-base font-bold text-gold mb-5 relative pb-2">
                 {getColumnTitle(column.title)}
-                <span className="absolute bottom-0 right-0 w-12 h-0.5 bg-gold/50" />
+                <span className="absolute bottom-0 start-0 w-12 h-0.5 bg-gold/50" />
               </h3>
               <ul className="space-y-3">
                 {column.links.map((link) => (
@@ -238,7 +238,10 @@ export function Footer() {
               <Facebook className="w-4 h-4" />
             </SocialLink>
             <SocialLink href={siteConfig.social.twitter} label={t("twitter")}>
-              <Twitter className="w-4 h-4" />
+              <XLogo className="w-4 h-4" />
+            </SocialLink>
+            <SocialLink href={siteConfig.social.tiktok} label={t("tiktok")}>
+              <TikTokIcon className="w-4 h-4" />
             </SocialLink>
             <SocialLink href={siteConfig.social.youtube} label={t("youtube")}>
               <Youtube className="w-4 h-4" />
@@ -302,6 +305,34 @@ function SocialLink({
     >
       {children}
     </a>
+  );
+}
+
+function XLogo({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path d="M18.9 2h3.2l-7 8L23.4 22h-6.4l-5-6.5-5.7 6.5H2.9l7.5-8.6L.7 2h6.5l4.5 6.1L18.9 2Zm-1.1 18.4h1.8L7.1 3.5H5.2l12.6 16.9Z" />
+    </svg>
+  );
+}
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path d="M16.4 3c.5 1.6 1.7 2.8 3.3 3.4v2.7a6.7 6.7 0 0 1-3.3-1V13a5.7 5.7 0 1 1-5.7-5.7c.2 0 .4 0 .6.1v2.9c-.2-.1-.4-.1-.6-.1a2.8 2.8 0 0 0 0 5.6 2.8 2.8 0 0 0 0-5.6c.2 0 .4 0 .6.1V5.7A8.4 8.4 0 0 0 16.4 3Z" />
+    </svg>
   );
 }
 

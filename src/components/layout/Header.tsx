@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { Link, usePathname } from "@/i18n/navigation";
 import Image from "next/image";
 import { useId, useRef, useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
 import {
   Menu,
   X,
@@ -23,7 +22,6 @@ import {
   MoreHorizontal,
   Instagram,
   Facebook,
-  Twitter,
   Youtube,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -179,7 +177,7 @@ export function Header() {
           {/* ═══ أقصى اليمين: اللوغو + اسم CASANOSTRA ═══ */}
           <Link href="/" className="flex items-center group flex-shrink-0 z-10 rounded-lg">
             <Image
-              src="/images/brand/logo-transparent.png"
+              src="/images/brand/logo-transparent.webp"
               alt={siteConfig.name}
               width={768}
               height={768}
@@ -193,7 +191,9 @@ export function Header() {
           <div className="hidden lg:flex items-center gap-3 z-10">
             <nav className="flex items-center gap-0 xl:gap-1">
               {navItems.map((item) => {
-                const isActive = pathname === item.href;
+                /* قارن بدون بادئة اللغة ليعمل التمييز النشط في كل اللغات */
+                const cleanPath = pathname.replace(/^\/(ar|en|tr|fr|ru)(?=\/|$)/, "") || "/";
+                const isActive = cleanPath === item.href;
                 const displayTitle = getNavTitle(item.title);
 
                 if (item.dropdown) {
@@ -355,7 +355,16 @@ export function Header() {
                 aria-label={tFooter("twitter")}
                 className="flex items-center justify-center w-8 h-8 rounded-lg text-gray-600 hover:text-gold hover:bg-gold/5 transition-colors"
               >
-                <Twitter className="w-5 h-5" />
+                <XLogo className="w-5 h-5" />
+              </a>
+              <a
+                href={siteConfig.social.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={tFooter("tiktok")}
+                className="flex items-center justify-center w-8 h-8 rounded-lg text-gray-600 hover:text-gold hover:bg-gold/5 transition-colors"
+              >
+                <TikTokIcon className="w-5 h-5" />
               </a>
               <a
                 href={siteConfig.social.youtube}
@@ -403,7 +412,7 @@ export function Header() {
           <div className="flex items-center justify-between h-20 px-4 border-b border-border">
             <Link href="/" className="inline-flex" onClick={closeMobileMenu}>
               <Image
-                src="/images/brand/logo-transparent.png"
+                src="/images/brand/logo-transparent.webp"
                 alt={siteConfig.name}
                 width={768}
                 height={768}
@@ -503,6 +512,34 @@ export function Header() {
         </div>
       )}
     </header>
+  );
+}
+
+function XLogo({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path d="M18.9 2h3.2l-7 8L23.4 22h-6.4l-5-6.5-5.7 6.5H2.9l7.5-8.6L.7 2h6.5l4.5 6.1L18.9 2Zm-1.1 18.4h1.8L7.1 3.5H5.2l12.6 16.9Z" />
+    </svg>
+  );
+}
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path d="M16.4 3c.5 1.6 1.7 2.8 3.3 3.4v2.7a6.7 6.7 0 0 1-3.3-1V13a5.7 5.7 0 1 1-5.7-5.7c.2 0 .4 0 .6.1v2.9c-.2-.1-.4-.1-.6-.1a2.8 2.8 0 0 0 0 5.6 2.8 2.8 0 0 0 0-5.6c.2 0 .4 0 .6.1V5.7A8.4 8.4 0 0 0 16.4 3Z" />
+    </svg>
   );
 }
 

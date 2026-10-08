@@ -31,11 +31,11 @@ export const siteConfig = {
 
   // روابط السوشال ميديا
   social: {
-    instagram: "https://instagram.com/casanostra",
-    facebook: "https://facebook.com/casanostra",
+    instagram: "https://www.instagram.com/casanostra.tr?stkn=NnJ1bmF5cjQwdG9h",
+    facebook: "https://www.facebook.com/casanostra.tr",
     twitter: "https://twitter.com/casanostra",
     youtube: "https://youtube.com/@casanostra",
-    tiktok: "https://tiktok.com/@casanostra",
+    tiktok: "https://www.tiktok.com/@casanostra847?_r=1&_t=ZS-9AMhT6XyJV3",
   },
 } as const;
 
@@ -69,7 +69,7 @@ export const servicesList: Service[] = [
     icon: "Building2",
     longDescription:
       "نوفّر لك إقامات فاخرة في أفخم الفنادق والشقق المخدومة في إسطنبول وأنطاليا وبودروم وطرابزون. سواء أكنت تبحث عن إقامة قصيرة لأسبوع أو إقامة شهرية أو سنوية، لدينا الخيار المثالي بأفضل الأسعار وأرقى المواقع قرب المعالم السياحية والمراكز التجارية. نتعامل مع شبكة واسعة من الفنادق 4 و5 نجوم والشقق الفندقية المخدومة لنضمن لك تجربة إقامة لا تُنسى.",
-    heroImage: "/images/services/reservations-turkey/hero.jpg",
+    heroImage: "/images/services/reservations-turkey/hero.webp",
     duration: "حسب الطلب",
     priceFrom: "ابتداءً من 60$ / ليلة",
     features: [
@@ -91,9 +91,9 @@ export const servicesList: Service[] = [
       "نقل المطار (يمكن إضافته كخدمة VIP)",
     ],
     galleryImages: [
-  "/images/services/reservations-turkey/gallery-1.jpg",
-  "/images/services/reservations-turkey/gallery-2.jpg",
-  "/images/services/reservations-turkey/gallery-3.jpg",
+  "/images/services/reservations-turkey/gallery-1.webp",
+  "/images/services/reservations-turkey/gallery-2.webp",
+  "/images/services/reservations-turkey/gallery-3.webp",
 ],
   },
   {
@@ -103,7 +103,7 @@ export const servicesList: Service[] = [
     icon: "FileCheck",
     longDescription:
       "نوفّر خدمة استخراج التأشيرة السياحية التركية لجميع الجنسيات العربية والأجنبية. خبرتنا الطويلة في التعامل مع القنصليات التركية حول العالم تضمن لك أعلى نسبة موافقة بأسرع وقت ممكن. نتولّى عنك كل الإجراءات: تعبئة الاستمارات، حجز المواعيد، تجهيز الملف، المتابعة حتى استلام التأشيرة. توفّر تركيا حالياً تأشيرة إلكترونية (e-Visa) للعديد من الجنسيات، ونوفّر لك كلا الخيارين حسب جنسيتك.",
-    heroImage: "/images/services/visa/hero.jpg",
+    heroImage: "/images/services/visa/hero.webp",
     duration: "3 - 10 أيام عمل",
     priceFrom: "ابتداءً من 50$",
     features: [
@@ -125,9 +125,9 @@ export const servicesList: Service[] = [
       "تكاليف الشحن إن كان الاستلام بالبريد",
     ],
     galleryImages: [
-  "/images/services/visa/gallery-1.jpg",
-  "/images/services/visa/gallery-2.jpg",
-  "/images/services/visa/gallery-3.jpg",
+  "/images/services/visa/gallery-1.webp",
+  "/images/services/visa/gallery-2.webp",
+  "/images/services/visa/gallery-3.webp",
 ],
   },
   {
@@ -137,7 +137,7 @@ export const servicesList: Service[] = [
     icon: "Car",
     longDescription:
       "استنزف تجربتك في تركيا مع أسطولنا من السيارات الفاخرة المرسيدس V-Class و BMW و Audi بسائق خاص محترف يتحدث العربية. خدمة VIP متكاملة من المطار إلى الفندق ومن الفندق إلى أي وجهة في تركيا. سائقونا مُدرّبون على الذوق العام والخصوصية والأمان، وسياراتنا مؤمّنة بالكامل ومجهّزة بأحدث وسائل الراحة. مثالية لرجال الأعمال والعائلات الراقية والمسافرين الباحثين عن تجربة استثنائية.",
-   heroImage: "/images/services/vip-cars/hero.jpg",
+   heroImage: "/images/services/vip-cars/hero.webp",
     duration: "حسب الطلب (بالساعة أو اليوم)",
     priceFrom: "ابتداءً من 80$ / ساعة",
     features: [
@@ -159,9 +159,9 @@ export const servicesList: Service[] = [
       "بوفيهات أو رسوم دخول خاصة",
     ],
    galleryImages: [
-  "/images/services/vip-cars/gallery-1.jpg",
-  "/images/services/vip-cars/gallery-2.jpg",
-  "/images/services/vip-cars/gallery-3.jpg",
+  "/images/services/vip-cars/gallery-1.webp",
+  "/images/services/vip-cars/gallery-2.webp",
+  "/images/services/vip-cars/gallery-3.webp",
 ],
   },
   {
@@ -171,7 +171,7 @@ export const servicesList: Service[] = [
     icon: "Hotel",
     longDescription:
       "احجز فندقك في تركيا بأسعار حصرية لا تجدها في أي منصة حجز أخرى. نتعامل مباشرة مع أفخم الفنادق والمنتجعات في إسطنبول وأنطاليا وبودروم وطرابزون وقيساري، ونوفّر لك خصومات تصل إلى 40% على السعر الرسمي. سواء كنت تبحث عن فندق بإطلالة على البوسفور أو منتجع شاطئي في أنطاليا أو فندق تاريخي في السلطان أحمد، لدينا الخيار المثالي لك.",
-    heroImage: "/images/services/hotels/hero.jpg",
+    heroImage: "/images/services/hotels/hero.webp",
     duration: "حسب الفترة المطلوبة",
     priceFrom: "ابتداءً من 70$ / ليلة",
     features: [
@@ -193,9 +193,9 @@ export const servicesList: Service[] = [
       "رسوم المنتجع (resort fee) في بعض الفنادق",
     ],
   galleryImages: [
-  "/images/services/hotels/gallery-1.jpg",
-  "/images/services/hotels/gallery-2.jpg",
-  "/images/services/hotels/gallery-3.jpg",
+  "/images/services/hotels/gallery-1.webp",
+  "/images/services/hotels/gallery-2.webp",
+  "/images/services/hotels/gallery-3.webp",
     ],
   },
   {
@@ -205,7 +205,7 @@ export const servicesList: Service[] = [
     icon: "Plane",
     longDescription:
       "نوفّر لك تذاكر طيران على جميع الخطوط الجوية التركية والعالمية بأسعار تنافسية. نتعامل مع Turkish Airlines وبغداد للطيران والسعودية والطيران العربي وغيرها، ونوفّر لك خيارات مرنة بين الدرجة الاقتصادية ودرجة رجال الأعمال. خدمتنا تشمل: البحث عن أفضل رحلة، الحجز، إصدار التذكرة، ومتابعة أي تغييرات. كما نوفّر خدمة الحجز الجماعي للعائلات والمجموعات السياحية بأسعار خاصة.",
-    heroImage: "/images/services/flights/hero.jpg",
+    heroImage: "/images/services/flights/hero.webp",
     duration: "حسب الرحلة",
     priceFrom: "حسب الوجهة والموسم",
     features: [
@@ -227,9 +227,9 @@ export const servicesList: Service[] = [
       "تأمين السفر",
     ],
     galleryImages: [
-  "/images/services/flights/gallery-1.jpg",
-  "/images/services/flights/gallery-2.jpg",
-  "/images/services/flights/gallery-3.jpg",
+  "/images/services/flights/gallery-1.webp",
+  "/images/services/flights/gallery-2.webp",
+  "/images/services/flights/gallery-3.webp",
 ],
   },
   {
@@ -239,7 +239,7 @@ export const servicesList: Service[] = [
     icon: "MapPin",
     longDescription:
       "اكتشف إسطنبول بأكملها مع جولاتنا اليومية المنظّمة التي تغطي أهم المعالم التاريخية والسياحية. جولة السلطان أحمد تغطي المسجد الأزرق وآيا صوفيا وقصر توبكابي، جولة البوسفور بالقارب، جولة غراند بازار، جولة تكسيم والميدان، جولة أرشاكوي وكوروكمس، وجولات السوق المصري والعديد من الوجهات الأخرى. كل جولة بمرشد سياحي يتحدث العربية ووسيلة نقل مريحة ومكيفة.",
-    heroImage: "/images/services/daily-tours/hero.jpg",
+    heroImage: "/images/services/daily-tours/hero.webp",
     duration: "6 - 10 ساعات / يوم",
     priceFrom: "ابتداءً من 45$ / شخص",
     features: [
@@ -261,9 +261,9 @@ export const servicesList: Service[] = [
       "وجبات إضافية خارج البرنامج",
     ],
     galleryImages: [
-  "/images/services/daily-tours/gallery-1.jpg",
-  "/images/services/daily-tours/gallery-2.jpg",
-  "/images/services/daily-tours/gallery-3.jpg",
+  "/images/services/daily-tours/gallery-1.webp",
+  "/images/services/daily-tours/gallery-2.webp",
+  "/images/services/daily-tours/gallery-3.webp",
 ],
   },
   {
@@ -273,7 +273,7 @@ export const servicesList: Service[] = [
     icon: "CarTaxiFront",
     longDescription:
       "صمّم رحلتك الخاصة في تركيا حسب ذوقك وميزانيتك. سواء كنت تريد زيارة كابادوكيا بالمنطاد، أو شواطئ أنطاليا، أو الينابيع الحرارية في باموكالي، أو القلاع البيزنطية في طرابزون، أو الجبال الخضراء في ريزا، نوفّر لك برنامجاً مخصصاً 100% يناسب احتياجاتك. رحلات خاصة بسيارة فاخرة وسائق/مرشد عربي طوال فترة الرحلة، مع إقامة في أفخم الفنادق وأنقى التجارب.",
-    heroImage: "/images/services/private-tours/hero.jpg",
+    heroImage: "/images/services/private-tours/hero.webp",
     duration: "3 - 14 يوم (حسب البرنامج)",
     priceFrom: "ابتداءً من 350$ / يوم",
     features: [
@@ -296,9 +296,9 @@ export const servicesList: Service[] = [
       "نشاطات إضافية (بالون، غوص، إلخ)",
     ],
     galleryImages: [
-  "/images/services/private-tours/gallery-1.jpg",
-  "/images/services/private-tours/gallery-2.jpg",
-  "/images/services/private-tours/gallery-3.jpg",
+  "/images/services/private-tours/gallery-1.webp",
+  "/images/services/private-tours/gallery-2.webp",
+  "/images/services/private-tours/gallery-3.webp",
 ],
   },
   {
@@ -308,7 +308,7 @@ export const servicesList: Service[] = [
     icon: "Users",
     longDescription:
       "رحلات جماعية منظّمة بالكامل للعائلات الكبيرة ومجموعات الأصدقاء ووفود الشركات. نوفّر باقات متكاملة تشمل الطيران، الإقامة، التنقلات، الجولات، الوجبات، وكل التفاصيل الصغيرة. أسعار خاصة للمجموعات تبدأ من 10 أشخاص، مع برامج قابلة للتخصيص حسب رغبة المجموعة. مثالية لرحلات الشركة، المدرسية، العائلية، وأيام العطل الجماعية.",
-    heroImage: "/images/services/group-tours/hero.jpg",
+    heroImage: "/images/services/group-tours/hero.webp",
     duration: "3 - 10 أيام",
     priceFrom: "ابتداءً من 250$ / شخص",
     features: [
@@ -332,9 +332,9 @@ export const servicesList: Service[] = [
       "الإكراميات",
     ],
     galleryImages: [
-  "/images/services/group-tours/gallery-1.jpg",
-  "/images/services/group-tours/gallery-2.jpg",
-  "/images/services/group-tours/gallery-3.jpg",
+  "/images/services/group-tours/gallery-1.webp",
+  "/images/services/group-tours/gallery-2.webp",
+  "/images/services/group-tours/gallery-3.webp",
 ],
   },
   {
@@ -344,7 +344,7 @@ export const servicesList: Service[] = [
     icon: "MoonStar",
     longDescription:
       "نوفّر باقات متكاملة للحج والعمرة عبر تركيا، تشمل تأشيرة الدخول للسعودية، تذاكر الطيران من بلدك إلى جدة أو المدينة، الإقامة في فنادق قريبة من الحرم، التنقلات بين المشاعر المقدسة، ووجبات طوال فترة الرحلة. باقاتنا مصمّمة لتوفير أعلى درجات الراحة والسكينة لأداء مناسكك بطمأنينة. فريقنا متخصص في القضايا اللوجستية لأداء الحج والعمرة.",
-    heroImage: "/images/services/hajj-umrah/hero.jpg",
+    heroImage: "/images/services/hajj-umrah/hero.webp",
     duration: "7 - 15 يوم",
     priceFrom: "حسب الباقة والموسم",
     features: [
@@ -367,9 +367,9 @@ export const servicesList: Service[] = [
       "الإكراميات",
     ],
     galleryImages: [
-  "/images/services/hajj-umrah/gallery-1.jpg",
-  "/images/services/hajj-umrah/gallery-2.jpg",
-  "/images/services/hajj-umrah/gallery-3.jpg",
+  "/images/services/hajj-umrah/gallery-1.webp",
+  "/images/services/hajj-umrah/gallery-2.webp",
+  "/images/services/hajj-umrah/gallery-3.webp",
 ],
   },
   {
@@ -379,7 +379,7 @@ export const servicesList: Service[] = [
     icon: "HeartPulse",
     longDescription:
       "نوفّر لك خدمة السياحة العلاجية في تركيا بأعلى المعايير العالمية. نتعامل مع أفضل المستشفيات والمراكز الطبية المعتمدة دولياً (JCI) في إسطنبول وأنقرة وأنطاليا. خدماتنا تشمل: زراعة الشعر، تجميل الأسنان، العمليات التجميلية، علاج العيون، القلب، العظام، والأورام. نوفّر لك استشارة طبية أولية، تنسيق كامل مع المستشفى، ترجمة طبية، إقامة فاخرة، ومتابعة بعد العودة لبلدك.",
-    heroImage: "/images/services/medical-tourism/hero.jpg",
+    heroImage: "/images/services/medical-tourism/hero.webp",
     duration: "3 - 14 يوم (حسب العلاج)",
     priceFrom: "حسب نوع العلاج",
     features: [
@@ -402,9 +402,9 @@ export const servicesList: Service[] = [
       "وجبات الفندق",
     ],
     galleryImages: [
-  "/images/services/medical-tourism/gallery-1.jpg",
-  "/images/services/medical-tourism/gallery-2.jpg",
-  "/images/services/medical-tourism/gallery-3.jpg",
+  "/images/services/medical-tourism/gallery-1.webp",
+  "/images/services/medical-tourism/gallery-2.webp",
+  "/images/services/medical-tourism/gallery-3.webp",
 ],
   },
   {
@@ -415,7 +415,7 @@ export const servicesList: Service[] = [
     longDescription:
       "نوفّر مجموعة واسعة من الخدمات الإضافية لتغطية كل ما قد تحتاجه أثناء تواجدك في تركيا. من حجز المطاعم الفاخرة، إلى تنظيم الفعاليات والاحتفالات، تأجير اليخوت الخاصة، حجز تذاكر المباريات الرياضية، خدمات الترجمة والمرافقة، تنظيم رحلات شهر العسل، حجز المنتجعات الصحية والحمامات التركية، وغيرها الكثير. أي خدمة تفكر فيها في تركيا، نحن نوفّرها لك.",
     heroImage:
-  "/images/services/other-services/hero.jpg",
+  "/images/services/other-services/hero.webp",
     duration: "حسب الخدمة",
     priceFrom: "حسب الطلب",
     features: [
@@ -437,9 +437,9 @@ export const servicesList: Service[] = [
       "الإكراميات",
     ],
     galleryImages: [
-  "/images/services/other-services/gallery-1.jpg",
-  "/images/services/other-services/gallery-2.jpg",
-  "/images/services/other-services/gallery-3.jpg",
+  "/images/services/other-services/gallery-1.webp",
+  "/images/services/other-services/gallery-2.webp",
+  "/images/services/other-services/gallery-3.webp",
 ],
   },
 ];
@@ -483,7 +483,7 @@ export const offersList: Offer[] = [
     longDescription:
       "عرض حصري لإخواننا من المغرب: خصم 25% على جميع باقات الإقامات في إسطنبول وأنطاليا وبودروم. يشمل الشقق المخدومة والفنادق الفاخرة بجميع وسائل الراحة.",
     heroImage:
-  "/images/offers/stays-morocco.jpg",
+  "/images/offers/stays-morocco.webp",
     validUntil: "نهاية الشهر",
     features: [
       "خصم 25% للجنسية المغربية",
@@ -512,7 +512,7 @@ export const offersList: Offer[] = [
     longDescription:
       "عرض خاص للمقيمين في أوروبا: خصم 25% على جميع الرحلات الداخلية والجولات اليومية في إسطنبول وكابادوكيا وأنطاليا.",
     heroImage:
-      "/images/services/daily-tours/hero.jpg",
+      "/images/services/daily-tours/hero.webp",
     validUntil: "نهاية الشهر",
     features: [
       "خصم 25% للمقيمين بأوروبا",
@@ -541,7 +541,7 @@ export const offersList: Offer[] = [
     longDescription:
       "عرض شهري على السيارات VIP: خصم 15% عند الحجز الأسبوعي أو الشهري. سيارات مرسيدس وBMW بسائق محترف يتحدث العربية.",
     heroImage:
-      "/images/services/vip-cars/hero.jpg",
+      "/images/services/vip-cars/hero.webp",
     validUntil: "نهاية الشهر",
     features: [
       "خصم 15% للحجز الأسبوعي+",
@@ -570,7 +570,7 @@ export const offersList: Offer[] = [
     longDescription:
       "عرض حصري لدول الخليج العربي: خصم 20% على حجز جميع الفنادق 4 و5 نجوم في إسطنبول وأنطاليا وبودروم.",
     heroImage:
-      "/images/services/hotels/hero.jpg",
+      "/images/services/hotels/hero.webp",
     validUntil: "نهاية الشهر",
     features: [
       "خصم 20% للجنسيات الخليجية",
@@ -599,7 +599,7 @@ export const offersList: Offer[] = [
     longDescription:
       "عرض شهري على حجز الطيران: خصم 10% عند الحجز المبكر قبل 30 يوماً. تذاكر ذهاب وإياب لجميع الوجهات.",
     heroImage:
-      "/images/services/flights/hero.jpg",
+      "/images/services/flights/hero.webp",
     validUntil: "نهاية الشهر",
     features: [
       "خصم 10% للحجز المبكر",
@@ -628,7 +628,7 @@ export const offersList: Offer[] = [
     longDescription:
       "عرض خاص للجنسيات العربية: خصم 15% على جولات إسطنبول اليومية. 5 رحلات ثابتة تغطي أهم المعالم.",
     heroImage:
-      "/images/services/daily-tours/hero.jpg",
+      "/images/services/daily-tours/hero.webp",
     validUntil: "نهاية الشهر",
     features: [
       "خصم 15% للجنسيات العربية",
@@ -657,7 +657,7 @@ export const offersList: Offer[] = [
     longDescription:
       "عرض عائلي: خصم 20% على الرحلات الخاصة لأشهر المدن التركية. كابادوكيا، أنطاليا، باموكالي وغيرها.",
     heroImage:
-      "/images/services/private-tours/hero.jpg",
+      "/images/services/private-tours/hero.webp",
     validUntil: "نهاية الشهر",
     features: [
       "خصم 20% للعائلات",
@@ -686,7 +686,7 @@ export const offersList: Offer[] = [
     longDescription:
       "عرض جماعي: خصم 25% للمجموعات من 10+ أشخاص. يشمل حافلة فاخرة ومرشد عربي خاص.",
     heroImage:
-      "/images/services/group-tours/hero.jpg",
+      "/images/services/group-tours/hero.webp",
     validUntil: "نهاية الشهر",
     features: [
       "خصم 25% للمجموعات +10",
@@ -715,7 +715,7 @@ export const offersList: Offer[] = [
     longDescription:
       "عرض خاص: خصم 15% على باقات الحج والعمرة عند الحجز قبل الموسم بـ 60 يوماً.",
     heroImage:
-      "/images/services/hajj-umrah/hero.jpg",
+      "/images/services/hajj-umrah/hero.webp",
     validUntil: "نهاية الشهر",
     features: [
       "خصم 15% للحجز المبكر",
@@ -744,7 +744,7 @@ export const offersList: Offer[] = [
     longDescription:
       "عرض شهري على السياحة العلاجية: خصم 10% على باقات العلاج في أفضل المستشفيات التركية المعتمدة دولياً.",
     heroImage:
-      "/images/services/medical-tourism/hero.jpg",
+      "/images/services/medical-tourism/hero.webp",
     validUntil: "نهاية الشهر",
     features: [
       "خصم 10% على الباقات",
@@ -773,7 +773,7 @@ export const offersList: Offer[] = [
     longDescription:
       "عرض خاص للجنسيات العربية: خصم 15% على استخراج فيزا تركيا. خدمة سريعة بنسبة موافقة تتجاوز 95%.",
     heroImage:
-      "/images/services/visa/hero.jpg",
+      "/images/services/visa/hero.webp",
     validUntil: "نهاية الشهر",
     features: [
       "خصم 15% للجنسيات العربية",

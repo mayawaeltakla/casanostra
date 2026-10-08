@@ -37,19 +37,18 @@ test("mobile navigation is opaque and theme controls stay synchronized", async (
     }
   });
 
-  await page.context().addCookies([
-    { name: "casanostra-locale", value: "ar", url: baseURL },
-  ]);
-
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.goto("/ar/", { waitUntil: "domcontentloaded" });
+    // انتظر اكتمال التحميل قبل النقر — التفاعل قبل hydration لا يستجيب.
+    await page.waitForLoadState("load");
     const headerToggle = page.locator('header button[aria-label="تبديل الوضع الليلي والنهاري"]');
     const footerToggle = page.locator('footer button[aria-label="تبديل الوضع الليلي والنهاري"]');
 
     for (const dark of [false, true]) {
       await page.evaluate((isDark) => localStorage.setItem("theme", isDark ? "dark" : "light"), dark);
       await page.reload({ waitUntil: "domcontentloaded" });
+      await page.waitForLoadState("load");
       expect(await page.locator("html").evaluate((element) => element.classList.contains("dark"))).toBe(dark);
 
       if (viewport.width < 1024) {
@@ -76,28 +75,49 @@ test("mobile navigation is opaque and theme controls stay synchronized", async (
         await expect(page.locator("html")).toHaveClass(/dark/);
         await expect(footerToggle).toHaveText("☀️");
         await page.reload({ waitUntil: "domcontentloaded" });
+        await page.waitForLoadState("load");
         await expect(page.locator("html")).toHaveClass(/dark/);
         await expect(page.locator("footer button[aria-label='تبديل الوضع الليلي والنهاري']")).toHaveText("☀️");
-        await page.goto("/contact", { waitUntil: "domcontentloaded" });
+        await page.goto("/ar/contact", { waitUntil: "domcontentloaded" });
         await expect(page.locator("html")).toHaveClass(/dark/);
-        await page.goto("/", { waitUntil: "domcontentloaded" });
+        await page.goto("/ar/", { waitUntil: "domcontentloaded" });
+        await page.waitForLoadState("load");
       } else {
         await footerToggle.scrollIntoViewIfNeeded();
         await footerToggle.click();
         await expect(page.locator("html")).not.toHaveClass(/dark/);
         await expect(headerToggle).toHaveText("🌙");
         await page.reload({ waitUntil: "domcontentloaded" });
+        await page.waitForLoadState("load");
         await expect(page.locator("html")).not.toHaveClass(/dark/);
       }
 
       await expectFooterTextContrast(page);
     }
 
-    await page.goto("/contact", { waitUntil: "domcontentloaded" });
+    await page.goto("/ar/contact", { waitUntil: "domcontentloaded" });
     expect(await page.locator("html").evaluate((element) => element.classList.contains("dark"))).toBe(false);
   }
 
   expect(browserErrors).toEqual([]);
+});
+
+test("dark theme survives a client-side language switch", async ({ page }) => {
+  await page.goto("/ar/offers", { waitUntil: "domcontentloaded" });
+  await page.waitForLoadState("load");
+
+  await page.locator('header button[aria-label="تبديل الوضع الليلي والنهاري"]').click();
+  await expect(page.locator("html")).toHaveClass(/dark/);
+
+  const languageButton = page.locator('[aria-label="تبديل اللغة"]').first();
+  await languageButton.evaluate((element) => (element as HTMLButtonElement).click());
+  await page.getByRole("option", { name: /English/ }).evaluate((element) => (element as HTMLButtonElement).click());
+
+  await expect(page).toHaveURL(/\/en\/offers$/);
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  // انحدار سابق: إعادة رسم <html> عند تغير lang/dir كانت تمسح class الداكن.
+  await expect(page.locator("html")).toHaveClass(/dark/);
+  await expect(page.locator('header button[aria-label="Switch Language"]').first()).toBeVisible();
 });
 
 test("footer language menu stays within the viewport in every locale and theme", async ({
@@ -113,11 +133,9 @@ test("footer language menu stays within the viewport in every locale and theme",
     await page.setViewportSize(viewport);
     for (const locale of locales) {
       for (const dark of [false, true]) {
-        await page.context().clearCookies();
-        await page.context().addCookies([
-          { name: "casanostra-locale", value: locale.code, url: baseURL },
-        ]);
-        await page.goto("/", { waitUntil: "domcontentloaded" });
+        await page.goto(`/${locale.code}/`, { waitUntil: "domcontentloaded" });
+        // انتظر اكتمال التحميل قبل فتح قائمة اللغة — النقر قبل hydration لا يفتحها.
+        await page.waitForLoadState("load");
         await page.evaluate((isDark) => {
           localStorage.setItem("theme", isDark ? "dark" : "light");
           document.documentElement.classList.toggle("dark", isDark);

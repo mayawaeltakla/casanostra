@@ -87,11 +87,13 @@ if (errors.length > 0) {
 }
 
 process.env.NEXT_PUBLIC_WHATSAPP_NUMBER = configuredNumber;
+const servicesModule = loadTypeScriptModule("src/lib/services.ts");
 const {
   buildSimpleWhatsAppLink,
   buildWhatsAppLink,
 } = loadTypeScriptModule("src/lib/whatsapp.ts", {
   "./site-config": { siteConfig },
+  "./services": servicesModule,
 });
 const expectedPrefix = `https://wa.me/${whatsappNumber}?text=`;
 const generatedLinks = [

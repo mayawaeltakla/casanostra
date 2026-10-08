@@ -42,15 +42,10 @@ test("help form validates required fields by mouse and keyboard in every locale"
   }
 
   for (const [index, locale] of locales.entries()) {
-    await page.context().clearCookies();
-    await page.context().addCookies([
-      {
-        name: "casanostra-locale",
-        value: locale.code,
-        url: baseURL,
-      },
-    ]);
-    await page.goto("/help", { waitUntil: "domcontentloaded" });
+    await page.goto(`/${locale.code}/help`, { waitUntil: "domcontentloaded" });
+    // انتظر اكتمال التحميل قبل ضغط Enter — وإلا قد يسبق الإرسالُ hydration
+    // فيقع submit أصلي (native) بلا تحقق React، خاصة عند بدء بارد.
+    await page.waitForLoadState("load");
 
     const form = page.locator("form").first();
     if (index === 0) {

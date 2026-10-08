@@ -13,16 +13,7 @@ test("public and KVKK email addresses remain distinct across localized contact s
   }
 
   for (const locale of locales) {
-    await page.context().clearCookies();
-    await page.context().addCookies([
-      {
-        name: "casanostra-locale",
-        value: locale,
-        url: baseURL,
-      },
-    ]);
-
-    for (const route of ["/contact", "/help"]) {
+    for (const route of [`/${locale}/contact`, `/${locale}/help`]) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
       await expect(
         page.locator(`a[href="${emailHref}"]`).first(),
@@ -30,7 +21,7 @@ test("public and KVKK email addresses remain distinct across localized contact s
       ).toBeVisible();
     }
 
-    for (const route of ["/privacy", "/terms"]) {
+    for (const route of [`/${locale}/privacy`, `/${locale}/terms`]) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
       await expect(
         page.locator(`a[href="${emailHref}"]`).first(),

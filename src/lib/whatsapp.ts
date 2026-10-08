@@ -1,5 +1,6 @@
 import { siteConfig } from "./site-config";
 import type { FieldDef } from "./services";
+import { isFieldVisible } from "./services";
 
 /**
  * ============================================================================
@@ -84,11 +85,8 @@ export function buildWhatsAppMessage(
   const peopleSections: string[] = [];
 
   for (const field of fields) {
-    /* تخطّي الحقول الشرطية إذا لم يتحقق الشرط */
-    if (field.showWhen) {
-      const triggerValue = formData[field.showWhen.field];
-      if (triggerValue !== field.showWhen.equals) continue;
-    }
+    /* تخطّي الحقول الشرطية إذا لم يتحقق الشرط (مقارنة canonical — آمنة لكل اللغات) */
+    if (!isFieldVisible(field, formData as Record<string, unknown>)) continue;
 
     const value = formData[field.name];
 

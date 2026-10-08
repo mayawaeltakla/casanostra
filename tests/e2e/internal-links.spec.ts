@@ -9,7 +9,7 @@ test("every reachable same-origin link resolves without an HTTP error", async ({
   }
 
   const origin = new URL(baseURL).origin;
-  const pending = ["/"];
+  const pending = ["/ar"];
   const visited = new Set<string>();
   const failures: string[] = [];
 

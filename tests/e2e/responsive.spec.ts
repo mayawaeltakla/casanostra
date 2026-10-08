@@ -8,12 +8,12 @@ const viewports = [
 ];
 
 const routes = [
-  "/",
-  "/contact",
-  "/help",
-  "/quick-booking",
-  "/plans",
-  "/services/visa",
+  "/ar",
+  "/ar/contact",
+  "/ar/help",
+  "/ar/quick-booking",
+  "/ar/plans",
+  "/ar/services/visa",
 ];
 
 test("key pages and forms stay within the viewport at required screen sizes", async ({
@@ -24,6 +24,9 @@ test("key pages and forms stay within the viewport at required screen sizes", as
 
     for (const route of routes) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
+      // انتظر اكتمال التحميل قبل أي تفاعل — وإلا قد يسبق النقر hydration
+      // فلا يستجيب زر القائمة (صفحة ثابتة تُرسم قبل تنفيذ JS عند بدء بارد).
+      await page.waitForLoadState("load");
       const dimensions = await page.evaluate(() => ({
         viewportWidth: document.documentElement.clientWidth,
         documentWidth: document.documentElement.scrollWidth,
@@ -47,13 +50,13 @@ test("key pages and forms stay within the viewport at required screen sizes", as
         `${route} controls should remain in-bounds at ${viewport.width}x${viewport.height}`,
       ).toEqual([]);
 
-      if (route === "/" && viewport.width < 768) {
+      if (route === "/ar" && viewport.width < 768) {
         const mobileMenuButton = page.locator("header button:has(svg.lucide-menu)");
         await expect(mobileMenuButton).toBeVisible();
         await mobileMenuButton.click();
         await expect(page.locator("header div.fixed.inset-0")).toBeVisible();
       }
-      if (["/contact", "/help", "/services/visa"].includes(route)) {
+      if (["/ar/contact", "/ar/help", "/ar/services/visa"].includes(route)) {
         const form = page.locator("form").first();
         await expect(form, `${route} form should be available`).toBeVisible();
         await expect(form.locator("input").first(), `${route} form input should be usable`).toBeVisible();

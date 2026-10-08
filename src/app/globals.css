@@ -298,6 +298,23 @@
 .dark .bg-navy-800\/50 {
   background-color: hsl(222 42% 18% / 0.5) !important;
 }
+.dark .bg-navy-900 {
+  background-color: hsl(225 40% 14%) !important;
+}
+/* خلفيات navy الشفافة تبقى داكنة في الوضع الداكن */
+.dark .bg-navy\/5 {
+  background-color: hsl(222 42% 90% / 0.05) !important;
+}
+.dark .bg-navy\/10 {
+  background-color: hsl(222 42% 90% / 0.1) !important;
+}
+.dark .bg-navy\/60 {
+  background-color: hsl(222 42% 18% / 0.6) !important;
+}
+/* hover الداكن: حافظ على التباين فوق الخلفيات الداكنة */
+.dark .hover\:bg-navy-700:hover {
+  background-color: hsl(222 42% 26%) !important;
+}
 /* الحدود التي تبقى داكنة في الوضع الداكن */
 .dark .border-navy-700\/50,
 .dark .border-navy-700\/30,

@@ -1245,6 +1245,7 @@ export const pageMessages: Record<string, PageMessages> = {
   quickBooking: quickBookingMessages,
   servicesPage: servicesPageMessages,
   offersPage: offersPageMessages,
+  plansPage: plansPageMessages,
   serviceForms: serviceFormsMessages,
 };
 

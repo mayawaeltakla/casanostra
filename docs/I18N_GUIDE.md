@@ -10,22 +10,27 @@ ar  Arabic    RTL  default
  ru Russian  LTR
 ```
 
-Do not add or remove a locale casually. A locale is a cross-cutting feature touching messages, page messages, service details, language picker, direction, metadata, tests, and often sitemap/indexability.
+Do not add or remove a locale casually. A locale is a cross-cutting feature touching messages, page messages, service details, language picker, direction, metadata, routing, tests, and often sitemap/indexability.
 
 ## Locale selection
 
-The current implementation uses the `casanostra-locale` cookie.
+Locales live in the URL prefix: `/ar/...`, `/en/...`, `/tr/...`, `/fr/...`, `/ru/...` (`localePrefix: "always"` in `src/i18n/routing.ts`).
 
-`src/app/layout.tsx` is responsible for:
+- `src/proxy.ts` (next-intl middleware) negotiates the locale from the URL prefix first, then from the `casanostra-locale` cookie or `accept-language` (e.g. a bare `/` visit), and redirects to the prefixed path. It also emits alternate `Link` headers for search engines.
+- `src/app/[locale]/layout.tsx` is responsible for:
 
-1. reading the cookie;
-2. validating the locale;
-3. falling back to Arabic;
-4. setting `<html lang="...">`;
-5. setting `dir="rtl"` only for Arabic;
-6. merging base + page message catalogs into `NextIntlClientProvider`.
+1. validating `params.locale` (`notFound()` when invalid);
+2. calling `setRequestLocale(locale)` for static rendering;
+3. setting `<html lang="...">`;
+4. setting `dir="rtl"` only for Arabic;
+5. merging base + page message catalogs into `NextIntlClientProvider`.
 
-The language switcher updates the cookie and reloads so server-rendered content uses the new locale.
+- `src/i18n/request.ts` reads the locale from `requestLocale` (set by the layout/proxy), with the legacy cookie as a last-resort fallback.
+- `src/app/layout.tsx` is intentionally minimal (pass-through); all locale work happens under `[locale]`.
+
+The language switcher navigates client-side (`router.replace(pathname, { locale })` from `src/i18n/navigation.ts`) to the same path in the new locale — no page reload, no state loss. It keeps the legacy `casanostra-locale` cookie in sync for backward compatibility.
+
+All internal links must use `Link` (and `usePathname`/`useRouter`) from `src/i18n/navigation.ts` so the prefix is applied automatically. Never import them from `next/link` / `next/navigation` for internal navigation (`notFound` stays from `next/navigation`).
 
 ## Translation ownership
 

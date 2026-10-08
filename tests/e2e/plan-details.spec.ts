@@ -17,15 +17,7 @@ test("plans show only confirmed names and route questions to the official WhatsA
   }
 
   for (const [locale, planNames] of Object.entries(plansByLocale)) {
-    await page.context().clearCookies();
-    await page.context().addCookies([
-      {
-        name: "casanostra-locale",
-        value: locale,
-        url: baseURL,
-      },
-    ]);
-    await page.goto("/plans", { waitUntil: "domcontentloaded" });
+    await page.goto(`/${locale}/plans`, { waitUntil: "domcontentloaded" });
 
     for (const planName of planNames) {
       await expect(page.getByRole("heading", { name: planName })).toBeVisible();

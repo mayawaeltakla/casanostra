@@ -5,22 +5,24 @@ import { createPortal } from "react-dom";
 import { Globe, ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 /**
- * LanguageSwitcher — زر تبديل اللغة الفعّال
+ * LanguageSwitcher — زر تبديل اللغة الفوري (بدون إعادة تحميل).
  *
  * - يعرض قائمة منسدلة بـ 5 لغات
- * - يقرأ اللغة الحالية من next-intl (المُستمَدة من cookie)
- * - عند النقر على أي لغة: يضبط cookie ويُعيد تحميل الصفحة
- *   فتتم قراءة الـ cookie من جديد في layout.tsx → يتغيّر المحتوى بالكامل
+ * - يقرأ اللغة الحالية من segment الـ URL ([locale])
+ * - عند النقر: تنقل عميل عبر next-intl إلى نفس المسار باللغة الجديدة —
+ *   لا reload، لا فقدان لحالة الصفحة، والرابط الجديد قابل للمشاركة.
+ * - يُبقي كوكي `casanostra-locale` متزامناً للتوافق مع الإصدارات السابقة.
  */
 
 const LANGUAGES = [
-  { code: "ar", name: "العربية", flag: "🇸🇦" },
-  { code: "en", name: "English", flag: "🇬🇧" },
-  { code: "tr", name: "Türkçe", flag: "🇹🇷" },
-  { code: "fr", name: "Français", flag: "🇫🇷" },
-  { code: "ru", name: "Русский", flag: "🇷🇺" },
+  { code: "ar", flag: "🇸🇦" },
+  { code: "en", flag: "🇬🇧" },
+  { code: "tr", flag: "🇹🇷" },
+  { code: "fr", flag: "🇫🇷" },
+  { code: "ru", flag: "🇷🇺" },
 ] as const;
 
 function persistLocaleCookie(locale: string) {
@@ -30,6 +32,8 @@ function persistLocaleCookie(locale: string) {
 export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const locale = useLocale();
   const t = useTranslations("nav");
+  const pathname = usePathname();
+  const router = useRouter();
   const direction = locale === "ar" ? "rtl" : "ltr";
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(() => {
@@ -41,6 +45,13 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const optionIdPrefix = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const languageLabels = {
+    ar: t("arabic"),
+    en: t("english"),
+    tr: t("turkish"),
+    fr: t("french"),
+    ru: t("russian"),
+  } as const;
   // اللغة المختارة حالياً (مستمَدة من locale المُمرَّر عبر next-intl)
   const selected =
     LANGUAGES.find((l) => l.code === locale) || LANGUAGES[0];
@@ -120,13 +131,11 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
 
   const handleSelect = (lang: (typeof LANGUAGES)[number]) => {
     setIsOpen(false);
-    // اضبط cookie للغة الجديدة وأعِد تحميل الصفحة
-    // فتتغيّر اللغة فعلياً في جميع أنحاء الموقع
+    if (lang.code === locale) return;
+    // أبقِ الكوكي القديم متزامناً (توافق سابق)، ثم تنقل عميلاً
+    // إلى نفس المسار باللغة الجديدة — دون أي إعادة تحميل.
     persistLocaleCookie(lang.code);
-    // إعطاء المتصفح لحظة لكتابة الـ cookie قبل إعادة التحميل
-    setTimeout(() => {
-      window.location.reload();
-    }, 50);
+    router.replace(pathname, { locale: lang.code });
   };
 
   const handleListboxKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -184,7 +193,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
       >
         <Globe className="w-4 h-4 text-gold" />
         <span className="text-sm font-medium text-navy">
-          {selected.flag} {compact ? selected.code.toUpperCase() : selected.name}
+          {selected.flag} {compact ? selected.code.toUpperCase() : languageLabels[selected.code]}
         </span>
         <ChevronDown
           className={cn(
@@ -236,7 +245,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
                     aria-selected={selected.code === lang.code}
                   >
                     <span className="text-lg">{lang.flag}</span>
-                    <span className="flex-1">{lang.name}</span>
+                    <span className="flex-1">{languageLabels[lang.code]}</span>
                     {selected.code === lang.code && (
                       <Check className="w-4 h-4 text-gold-800 dark:text-gold-300 flex-shrink-0" />
                     )}

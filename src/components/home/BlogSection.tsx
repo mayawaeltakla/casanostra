@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
+import { Link } from "@/i18n/navigation";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import { getSortedPosts } from "@/lib/blog";
 import { useLocale, useTranslations } from "next-intl";
@@ -9,6 +10,7 @@ const previewMessages: Record<string, { index: number; minutes: number }> = {
   "best-10-places-istanbul": { index: 1, minutes: 8 },
   "turkey-visa-complete-guide": { index: 2, minutes: 10 },
   "cappadocia-balloon-city": { index: 3, minutes: 7 },
+  "golden-tips-before-turkey-trip": { index: 4, minutes: 6 },
 };
 
 /**
@@ -23,6 +25,8 @@ export function BlogSection() {
   const locale = useLocale();
   const t = useTranslations("home");
 
+  /* المحتوى مفهرس عربياً فقط (SEO) — إخفاء كامل خارج ar لمنع تسرب العربية
+   * ومتوافق مع sitemap المستبعد وrobots noindex لغير ar. */
   if (locale !== "ar") return null;
 
   return (
@@ -62,10 +66,12 @@ export function BlogSection() {
             >
               {/* صورة الغلاف */}
               <div className="relative h-44 overflow-hidden">
-                <img
+                <Image
                   src={post.coverImage}
                   alt={title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-navy/60 to-transparent" />
                 {/* التصنيف */}

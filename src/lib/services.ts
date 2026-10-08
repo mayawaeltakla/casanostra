@@ -46,9 +46,18 @@ export interface FieldDef {
   type: FieldType;
   required?: boolean;
   placeholder?: string;
-  /** خيارات للحقل من نوع select أو radio */
+  /**
+   * خيارات للحقل من نوع select أو radio.
+   * القيم هنا canonical عربية داخلية (مفاتيح تخزين) وليست نصوص عرض.
+   * نصوص العرض المترجمة تأتي من `serviceForms.options` في page-messages
+   * ويتم الربط بالفهرس (index) حصراً — لا تقارن النصوص حرفياً أبداً.
+   */
   options?: string[];
-  /** إظهار هذا الحقل فقط عندما يساوي حقل آخر قيمة معيّنة */
+  /**
+   * إظهار هذا الحقل فقط عندما يساوي حقل آخر قيمة معيّنة.
+   * `equals` يجب أن تكون القيمة canonical المخزنة (العربية في services.ts)
+   * وليست التسمية المترجمة المعروضة — استخدم `isFieldVisible` دائماً.
+   */
   showWhen?: { field: string; equals: string };
   /** حقول كل شخص (للعدّاد people-counter فقط) */
   personFields?: PersonFieldDef[];
@@ -455,6 +464,19 @@ export const services: ServiceDef[] = [
 /** البحث عن خدمة بواسطة slug */
 export function getServiceBySlug(slug: string): ServiceDef | undefined {
   return services.find((s) => s.slug === slug);
+}
+
+/**
+ * هل يجب إظهار حقل شرطي؟ — مقارنة canonical آمنة لكل اللغات.
+ * formData يخزن القيم canonical (العربية من `options`) بينما العرض مترجم،
+ * لذا نقارن القيمة المخزنة مع `showWhen.equals` مباشرة دون أي ترجمة.
+ */
+export function isFieldVisible(
+  field: FieldDef,
+  formData: Record<string, unknown>,
+): boolean {
+  if (!field.showWhen) return true;
+  return formData[field.showWhen.field] === field.showWhen.equals;
 }
 
 /** قائمة جميع الـ slugs (للاستخدام في generateStaticParams) */

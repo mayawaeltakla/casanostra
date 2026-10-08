@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { buildSimpleWhatsAppLink } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname } from "@/i18n/navigation";
 
 /**
  * WhatsAppButton — زر واتساب عائم ثابت أسفل الشاشة (يسار في RTL).
@@ -24,11 +25,17 @@ export function WhatsAppButton() {
   const [overlapsFormControl, setOverlapsFormControl] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const t = useTranslations("whatsapp");
+  const locale = useLocale();
+  const pathname = usePathname();
+  /* RTL: الزر يساراً للعربية، ويميناً لبقية اللغات (LTR) لتفادي تغطية المحتوى. */
+  const sideClasses = locale === "ar" ? "left-4 sm:left-6" : "right-4 sm:right-6";
 
   // إظهار الزر بعد تمرير 200px أو في الصفحة الرئيسية مباشرةً
+  // (usePathname من next-intl يعيد المسار دون بادئة اللغة — طبيعي للمقارنة)
   useEffect(() => {
+    const cleanPath = pathname.replace(/^\/(ar|en|tr|fr|ru)(?=\/|$)/, "") || pathname;
     const handleScroll = () => {
-      setVisible(window.scrollY > 200 || window.location.pathname === "/");
+      setVisible(window.scrollY > 200 || cleanPath === "/");
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     // فحص أولي غير متزامن لتفادي تحذير setState المتزامن
@@ -37,7 +44,7 @@ export function WhatsAppButton() {
       window.removeEventListener("scroll", handleScroll);
       cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     let frameId = 0;
@@ -101,7 +108,7 @@ export function WhatsAppButton() {
       {chatOpen && (
         <div
           className={cn(
-            "fixed bottom-24 left-4 sm:left-6 z-50 w-[320px] max-w-[calc(100vw-2rem)]",
+            `fixed bottom-24 ${sideClasses} z-50 w-[320px] max-w-[calc(100vw-2rem)]`,
             "bg-card rounded-2xl shadow-luxury-lg border border-border overflow-hidden animate-scale-in",
           )}
         >
@@ -157,7 +164,7 @@ export function WhatsAppButton() {
         ref={buttonRef}
         onClick={() => setChatOpen(!chatOpen)}
         className={cn(
-          "fixed bottom-6 left-4 sm:left-6 z-50",
+          `fixed bottom-6 ${sideClasses} z-50`,
           "flex items-center justify-center",
           "w-14 h-14 sm:w-16 sm:h-16",
           "bg-[#25D366] text-white rounded-full",

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { buildSimpleWhatsAppLink } from "@/lib/whatsapp";
 import { useTranslations } from "next-intl";
@@ -31,7 +32,7 @@ const offers: Offer[] = [
     messageKey: "featuredOffer1Message",
     discount: "25%",
     image:
-      "/images/services/reservations-turkey/hero.jpg",
+      "/images/services/reservations-turkey/hero.webp",
     waMessage: "",
   },
   {
@@ -40,7 +41,7 @@ const offers: Offer[] = [
     messageKey: "featuredOffer2Message",
     discount: "20%",
     image:
-      "/images/services/vip-cars/hero.jpg",
+      "/images/services/vip-cars/hero.webp",
     waMessage: "",
   },
   {
@@ -49,7 +50,7 @@ const offers: Offer[] = [
     messageKey: "featuredOffer3Message",
     discount: "25%",
     image:
-      "/images/services/hotels/hero.jpg",
+      "/images/services/hotels/hero.webp",
     waMessage: "",
   },
   {
@@ -58,7 +59,7 @@ const offers: Offer[] = [
     messageKey: "featuredOffer4Message",
     discount: "15%",
     image:
-      "/images/services/flights/hero.jpg",
+      "/images/services/flights/hero.webp",
     waMessage: "",
   },
   {
@@ -67,7 +68,7 @@ const offers: Offer[] = [
     messageKey: "featuredOffer5Message",
     discount: "10%",
     image:
-      "/images/services/medical-tourism/hero.jpg",
+      "/images/services/medical-tourism/hero.webp",
     waMessage: "",
   },
   {
@@ -76,7 +77,7 @@ const offers: Offer[] = [
     messageKey: "featuredOffer6Message",
     discount: "15%",
     image:
-      "/images/services/visa/hero.jpg",
+      "/images/services/visa/hero.webp",
     waMessage: "",
   },
 ];
@@ -108,10 +109,12 @@ export function FeaturedOffers() {
               >
                 {/* الصورة — تغطي نصف البطاقة */}
                 <div className="relative aspect-[3/2] overflow-hidden bg-muted">
-                  <img
+                  <Image
                     src={offer.image}
                     alt={title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   {/* شارة الخصم */}
                   <div className="absolute top-3 right-3 bg-gold text-navy font-bold text-sm px-3 py-1 rounded-lg shadow-md">

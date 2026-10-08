@@ -1,34 +1,34 @@
 import { expect, test } from "@playwright/test";
 
 const routes = [
-  "/",
-  "/about",
-  "/services",
-  "/offers",
-  "/plans",
-  "/quick-booking",
-  "/contact",
-  "/faq",
-  "/help",
-  "/blog",
-  "/privacy",
-  "/terms",
+  "/ar",
+  "/ar/about",
+  "/ar/services",
+  "/ar/offers",
+  "/ar/plans",
+  "/ar/quick-booking",
+  "/ar/contact",
+  "/ar/faq",
+  "/ar/help",
+  "/ar/blog",
+  "/ar/privacy",
+  "/ar/terms",
   "/api",
-  "/services/reservations-turkey",
-  "/services/visa",
-  "/services/vip-cars",
-  "/services/hotels",
-  "/services/flights",
-  "/services/daily-tours",
-  "/services/private-tours",
-  "/services/group-tours",
-  "/services/hajj-umrah",
-  "/services/medical-tourism",
-  "/services/other-services",
-  "/blog/best-10-places-istanbul",
-  "/blog/turkey-visa-complete-guide",
-  "/blog/cappadocia-balloon-city",
-  "/blog/golden-tips-before-turkey-trip",
+  "/ar/services/reservations-turkey",
+  "/ar/services/visa",
+  "/ar/services/vip-cars",
+  "/ar/services/hotels",
+  "/ar/services/flights",
+  "/ar/services/daily-tours",
+  "/ar/services/private-tours",
+  "/ar/services/group-tours",
+  "/ar/services/hajj-umrah",
+  "/ar/services/medical-tourism",
+  "/ar/services/other-services",
+  "/ar/blog/best-10-places-istanbul",
+  "/ar/blog/turkey-visa-complete-guide",
+  "/ar/blog/cappadocia-balloon-city",
+  "/ar/blog/golden-tips-before-turkey-trip",
 ];
 
 test("production routes load without browser or internal network errors", async ({
@@ -80,7 +80,7 @@ test("production routes load without browser or internal network errors", async 
     { width: 375, height: 812 },
   ]) {
     await page.setViewportSize(viewport);
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.goto("/ar", { waitUntil: "domcontentloaded" });
 
     const logos = page.locator('img[alt="CASANOSTRA"]');
     await expect(logos).toHaveCount(2);

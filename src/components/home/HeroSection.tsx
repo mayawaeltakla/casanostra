@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Sparkles, ArrowLeft, MessageCircle, User, Phone, Heart, CheckCircle2, XCircle } from "lucide-react";
 import { buildSimpleWhatsAppLink } from "@/lib/whatsapp";
 import { useTranslations } from "next-intl";
@@ -27,6 +27,17 @@ export function HeroSection() {
     const video = videoRef.current;
     if (!video) return;
 
+    // قرار واحد فقط عند التحميل: ملف واحد حسب حجم الشاشة الفعلي
+    // لا قائمة مصادر ولا تحميل استباقي كامل، أي تنزيل واحد بلا ازدواج
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    const chosen = isDesktop ? "/videos/hero-1080.mp4" : "/videos/hero-720.mp4";
+    if (!video.src || !video.src.endsWith(chosen)) {
+      video.src = chosen;
+      video.load(); // يجلب الميتاداتا فقط أولاً، ثم التشغيل يبث الملف تدفقاً واحداً
+    }
+    video.play().catch(() => {});
+
+    // جاهزية أول إطار تُطلق الفاد إن
     const revealVideo = () => setVideoReady(true);
     if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) revealVideo();
     video.addEventListener("loadeddata", revealVideo);
@@ -41,15 +52,13 @@ export function HeroSection() {
   return (
     <section className="relative min-h-[100svh] flex items-center overflow-hidden">
       {/* بوستر متجاوب يبقى ظاهراً حتى يبدأ الفيديو */}
-      <picture
-        className={`absolute inset-0 ${videoReady ? "hidden" : "block"}`}
-      >
+      <picture className="absolute inset-0">
         <source
-          srcSet="/videos/poster-hero-mobile.jpg"
+          srcSet="/videos/poster-hero-mobile.webp"
           media="(max-width: 767px)"
         />
         <img
-          src="/videos/poster-hero.jpg"
+          src="/videos/poster-hero.webp"
           alt=""
           className="h-full w-full object-cover"
         />
@@ -59,22 +68,12 @@ export function HeroSection() {
         muted
         playsInline
         loop
-        preload="auto"
-        poster="/videos/poster-hero.jpg"
+        preload="metadata"
         ref={videoRef}
-        className="absolute inset-0 h-full w-full object-cover"
-      >
-        <source
-          src="/videos/hero-1080.mp4"
-          type="video/mp4"
-          media="(min-width: 768px)"
-        />
-        <source
-          src="/videos/hero-720.mp4"
-          type="video/mp4"
-          media="(max-width: 767px)"
-        />
-      </video>
+        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out ${
+          videoReady ? "opacity-100" : "opacity-0"
+        }`}
+      />
 
       {/* طبقة overlay داكنة متدرّجة لتحسين التباين */}
       <div

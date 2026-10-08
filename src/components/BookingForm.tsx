@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { buildWhatsAppMessage, type PersonData } from "@/lib/whatsapp";
 import type { FieldDef, PersonFieldDef } from "@/lib/services";
+import { isFieldVisible } from "@/lib/services";
 import { cn } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -154,11 +155,8 @@ export function BookingForm({
     const newErrors: Record<string, string> = {};
 
     for (const field of fields) {
-      /* تخطّي الحقول الشرطية إذا لم يتحقق الشرط */
-      if (field.showWhen) {
-        const triggerValue = formData[field.showWhen.field] as string;
-        if (triggerValue !== field.showWhen.equals) continue;
-      }
+      /* تخطّي الحقول الشرطية إذا لم يتحقق الشرط (مقارنة canonical عبر المساعد) */
+      if (!isFieldVisible(field, formData)) continue;
 
       /* عدّاد الأشخاص — التحقق من كل شخص */
       if (field.type === "people-counter") {
@@ -202,7 +200,9 @@ export function BookingForm({
     /* محاكاة تأخير بسيط لإظهار حالة التحميل */
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    /* بناء رابط واتساب بالبيانات الكاملة */
+    /* بناء رابط واتساب بالبيانات الكاملة
+     * القيم المخزنة canonical عربية؛ نربطها بالتسمية المترجمة عبر الفهرس حصراً
+     * (لا تقارن النصوص — الصياغة العربية للعرض قد تختلف عن canonical قصداً). */
     const displayValues = fields.reduce<Record<string, string>>((values, field) => {
       const value = formData[field.name] as string;
       const optionIndex = field.options?.indexOf(value) ?? -1;
@@ -287,11 +287,8 @@ export function BookingForm({
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {displayFields.map((field) => {
-            /* تخطّي الحقول الشرطية إذا لم يتحقق الشرط */
-            if (field.showWhen) {
-              const triggerValue = formData[field.showWhen.field] as string;
-              if (triggerValue !== field.showWhen.equals) return null;
-            }
+            /* تخطّي الحقول الشرطية إذا لم يتحقق الشرط (مقارنة canonical عبر المساعد) */
+            if (!isFieldVisible(field, formData)) return null;
 
             /* عدّاد الأشخاص — مكوّن خاص يأخذ كامل العرض */
             if (field.type === "people-counter") {

@@ -1,8 +1,12 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { useTranslations } from "next-intl";
+import { useEffect, useLayoutEffect, useSyncExternalStore } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { isDarkTheme, subscribeToTheme, toggleTheme } from "@/lib/theme";
+
+/* مزامنة قبل الرسم على العميل فقط (بلا تحذير SSR) */
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 /**
  * ThemeToggle — زر تبديل الوضع الليلي/النهاري
@@ -13,10 +17,25 @@ import { isDarkTheme, subscribeToTheme, toggleTheme } from "@/lib/theme";
  * - أيقونة: 🌙 في الفاتح، ☀️ في الداكن
  * - دائري w-10 h-10 متجاوب
  * - نصوص aria-label/title مترجمة
+ * - يعيد تطبيق الثيم المحفوظ عند التركيب/تبدل اللغة: التنقل العميل
+ *   بين اللغات يعيد React رسم <html> (تتغير lang/dir) فيمسح class "dark"
+ *   المضاف imperative — هذه المزامنة (قبل الرسم، بلا وميض) تعيده.
  */
 export default function ThemeToggle() {
   const dark = useSyncExternalStore(subscribeToTheme, isDarkTheme, () => false);
   const t = useTranslations("theme");
+  const locale = useLocale();
+
+  useIsomorphicLayoutEffect(() => {
+    try {
+      document.documentElement.classList.toggle(
+        "dark",
+        localStorage.getItem("theme") === "dark",
+      );
+    } catch {
+      /* وضع خاص/تخزين محظور — أبقِ الوضع الحالي */
+    }
+  }, [locale]);
 
   return (
     <button

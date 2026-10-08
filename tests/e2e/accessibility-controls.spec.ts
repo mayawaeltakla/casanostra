@@ -13,13 +13,10 @@ test("desktop services disclosure supports pointer and keyboard in both themes a
   await page.setViewportSize({ width: 1280, height: 800 });
 
   for (const locale of locales) {
-    await page.context().clearCookies();
-    await page.context().addCookies([
-      { name: "casanostra-locale", value: locale.code, url: baseURL },
-    ]);
-
     for (const dark of [false, true]) {
-      await page.goto("/services", { waitUntil: "domcontentloaded" });
+      await page.goto(`/${locale.code}/services`, { waitUntil: "domcontentloaded" });
+      // التفاعل (hover/لوحة مفاتيح) يحتاج hydration مكتملاً.
+      await page.waitForLoadState("load");
       await page.evaluate((isDark) => {
         localStorage.setItem("theme", isDark ? "dark" : "light");
         document.documentElement.classList.toggle("dark", isDark);
@@ -55,10 +52,9 @@ test("footer language listbox supports active-descendant keyboard interaction", 
 }) => {
   if (!baseURL) throw new Error("Playwright baseURL must be configured.");
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.context().addCookies([
-    { name: "casanostra-locale", value: "en", url: baseURL },
-  ]);
-  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.goto("/en/", { waitUntil: "domcontentloaded" });
+  // التفاعل (hover/لوحة مفاتيح) يحتاج hydration مكتملاً.
+  await page.waitForLoadState("load");
 
   const trigger = page.locator("footer button[aria-haspopup='listbox']");
   await trigger.scrollIntoViewIfNeeded();
@@ -82,7 +78,7 @@ test("footer language listbox supports active-descendant keyboard interaction", 
 test("all visible form labels are associated and invalid fields reference errors", async ({
   page,
 }) => {
-  const paths = ["/", "/contact", "/help", "/services/visa"];
+  const paths = ["/ar", "/ar/contact", "/ar/help", "/ar/services/visa"];
   for (const path of paths) {
     await page.goto(path, { waitUntil: "domcontentloaded" });
     const unassociatedLabels = await page.locator("label").evaluateAll((labels) =>
@@ -99,7 +95,8 @@ test("all visible form labels are associated and invalid fields reference errors
     expect(duplicateIds, `duplicate IDs on ${path}`).toEqual([]);
   }
 
-  await page.goto("/contact", { waitUntil: "domcontentloaded" });
+  await page.goto("/ar/contact", { waitUntil: "domcontentloaded" });
+  await page.waitForLoadState("load");
   await page.locator("form button[type='submit']").click();
   for (const field of await page.locator("form [aria-invalid='true']").all()) {
     const describedBy = await field.getAttribute("aria-describedby");
@@ -110,7 +107,7 @@ test("all visible form labels are associated and invalid fields reference errors
 
 test("gold text in navigation and content meets normal-text contrast in both themes", async ({ page }) => {
   for (const dark of [false, true]) {
-    for (const path of ["/services", "/contact", "/offers"]) {
+    for (const path of ["/ar/services", "/ar/contact", "/ar/offers"]) {
       await page.goto(path, { waitUntil: "domcontentloaded" });
       await page.evaluate((isDark) => {
         localStorage.setItem("theme", isDark ? "dark" : "light");

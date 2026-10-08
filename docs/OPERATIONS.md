@@ -100,6 +100,18 @@ Be careful with `db:push` and especially `db:reset`; the current script accepts 
 
 Do not change the proxy contract unless the deployment task explicitly requires it.
 
+## Caching & CDN policy
+
+Cache headers are defined once in `next.config.mjs` (`headers()`); do not duplicate them in Caddy:
+
+- `/_next/static/*`: `public, max-age=31536000, immutable` (hashed build assets).
+- `/images/*`, `/videos/*`, `/logo.svg`: browser 1 day, edge (`s-maxage`) 7 days, `stale-while-revalidate` 1 day.
+- `/sitemap.xml`, `/robots.txt`: 1 hour (browser + edge), stale 1 day.
+- `/api/*`: `no-store` (dynamic).
+- Page HTML (`/[locale]/*`): intentionally left to Next.js defaults — it distinguishes static from dynamic routes itself, and overriding could break proxy locale detection. No `Vary: Accept-Language` is needed because every locale has its own prefixed URL.
+
+To put a CDN (e.g. Cloudflare) in front of Caddy: proxy everything to the origin, respect origin `Cache-Control`, never cache `/api/*`, and keep query strings for `XTransformPort`. No repo change is needed for that — the app is already CDN-ready (distinct URLs per locale, `s-maxage` on assets, alternate `Link` headers from the proxy).
+
 ## Common debugging sequence
 
 When the site appears to disappear or the dev server fails:

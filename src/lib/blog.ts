@@ -53,7 +53,7 @@ export const blogPosts: BlogPost[] = [
     title: "أفضل 10 أماكن لزيارتها في إسطنبول",
     excerpt:
       "دليل شامل لأهم 10 معالم سياحية في إسطنبول — من المسجد الأزرق إلى قصر دولماباهتشه. تعرّف على أفضل الأماكن لزيارتها في رحلتك القادمة إلى تركيا.",
-    coverImage: "/images/blog/best-10-places-istanbul.jpg",
+    coverImage: "/images/blog/best-10-places-istanbul.webp",
     category: "وجهات سياحية",
     author: "فريق CASANOSTRA",
     publishedAt: "2025-09-15",
@@ -175,7 +175,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "كل ما تحتاج معرفته عن الفيزا التركية — أنواعها، شروطها، الأوراق المطلوبة، ومدة الاستخراج. دليل شامل بالعربية لكل الجنسيات العربية والأجنبية.",
     coverImage:
-      "/images/blog/turkey-visa-complete-guide.jpg",
+      "/images/blog/turkey-visa-complete-guide.webp",
     category: "إجراءات السفر",
     author: "فريق CASANOSTRA",
     publishedAt: "2025-09-10",
@@ -289,7 +289,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "اكتشف سحر كابادوكيا — مدينة مداخن الجنيات والبالونات الساحرة عند شروق الشمس. كل ما تحتاج معرفته لرحلة لا تُنسى في قلب تركيا.",
     coverImage:
-      "/images/blog/cappadocia-balloon-city.jpg",
+      "/images/blog/cappadocia-balloon-city.webp",
     category: "وجهات سياحية",
     author: "فريق CASANOSTRA",
     publishedAt: "2025-09-05",
@@ -383,7 +383,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       "10 نصائح ذهبية يجب معرفتها قبل سفرك إلى تركيا — من العملة والطقس إلى الأمان والمواصلات. استعد لرحلة مثالية بدون مفاجآت.",
     coverImage:
-      "/images/blog/golden-tips-before-turkey-trip.jpg",
+      "/images/blog/golden-tips-before-turkey-trip.webp",
     category: "نصائح سفر",
     author: "فريق CASANOSTRA",
     publishedAt: "2025-08-28",

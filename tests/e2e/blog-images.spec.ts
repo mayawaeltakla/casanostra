@@ -39,17 +39,8 @@ test("blog covers load without broken image requests in every locale", async ({
   });
 
   for (const locale of locales) {
-    await page.context().clearCookies();
-    await page.context().addCookies([
-      {
-        name: "casanostra-locale",
-        value: locale,
-        url: baseURL,
-      },
-    ]);
-
     for (const route of blogRoutes) {
-      const response = await page.goto(route, { waitUntil: "domcontentloaded" });
+      const response = await page.goto(`/${locale}${route}`, { waitUntil: "domcontentloaded" });
       expect(response?.status(), `${route} should load in ${locale}`).toBeLessThan(400);
 
       const images = page.locator("main img");

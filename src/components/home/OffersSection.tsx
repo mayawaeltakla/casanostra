@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Tag, ArrowLeft, Clock, Percent, ChevronLeft } from "lucide-react";
 import { offersList } from "@/lib/site-config";
 import { buildSimpleWhatsAppLink } from "@/lib/whatsapp";

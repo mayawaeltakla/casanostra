@@ -21,10 +21,11 @@ CASANOSTRA is a multilingual luxury tourism agency website focused on Turkey. Th
 
 ```text
 src/
-  app/                 Routes, page composition, metadata, global CSS, API, sitemap
+  app/                 Root pass-through layout; all routes under [locale]/; API + sitemap stay at root
+  proxy.ts             Locale negotiation/redirect middleware (next-intl)
   components/          Shared site components, homepage sections, UI primitives
   hooks/               Small reusable React hooks
-  i18n/                Locale registry, base messages, page messages, service details, request/routing
+  i18n/                Locale registry, base messages, page messages, service details, request/routing/navigation
   lib/                 Business/content data, services, blog, WhatsApp, DB client, utilities
 
 prisma/
@@ -162,9 +163,9 @@ Builds the server-side request messages from the cookie-selected locale.
 
 Defines next-intl routing configuration (`as-needed` locale prefix).
 
-### `src/app/layout.tsx`
+### `src/app/[locale]/layout.tsx`
 
-Reads `casanostra-locale`, sets `<html lang>` and `dir`, and merges the message catalogs for the client provider.
+Validates `params.locale`, calls `setRequestLocale`, sets `<html lang>` and `dir`, and merges the message catalogs for the client provider. The root `src/app/layout.tsx` is a minimal pass-through. Locale comes from the URL prefix; `src/proxy.ts` redirects unprefixed visits.
 
 ## Important shared components
 

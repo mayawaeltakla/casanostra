@@ -12,19 +12,19 @@ import { useTranslations } from "next-intl";
 const videos = [
   {
     titleKey: "videoTitle1",
-    poster: "/videos/loop-bosphorus-poster.jpg",
+    poster: "/videos/loop-bosphorus-poster.webp",
     desktopSrc: "/videos/loop-bosphorus.mp4",
     mobileSrc: "/videos/loop-bosphorus-lite.mp4",
   },
   {
     titleKey: "videoTitle2",
-    poster: "/videos/loop-mosque-poster.jpg",
+    poster: "/videos/loop-mosque-poster.webp",
     desktopSrc: "/videos/loop-mosque.mp4",
     mobileSrc: "/videos/loop-mosque-lite.mp4",
   },
   {
     titleKey: "videoTitle3",
-    poster: "/videos/loop-cappadocia-poster.jpg",
+    poster: "/videos/loop-cappadocia-poster.webp",
     desktopSrc: "/videos/loop-cappadocia.mp4",
     mobileSrc: "/videos/loop-cappadocia-lite.mp4",
   },

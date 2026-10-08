@@ -392,7 +392,7 @@ for (const service of servicesList) {
 }
 
 const serviceRoute = fs.readFileSync(
-  path.join(projectRoot, "src/app/services/[slug]/page.tsx"),
+  path.join(projectRoot, "src/app/[locale]/services/[slug]/page.tsx"),
   "utf8",
 );
 if (!serviceRoute.includes("generateStaticParams") || !serviceRoute.includes("serviceFormDefs.map")) {
@@ -428,7 +428,7 @@ for (const post of blogPosts) {
 }
 
 const blogRoute = fs.readFileSync(
-  path.join(projectRoot, "src/app/blog/[slug]/page.tsx"),
+  path.join(projectRoot, "src/app/[locale]/blog/[slug]/page.tsx"),
   "utf8",
 );
 if (!blogRoute.includes("generateStaticParams") || !blogRoute.includes("blogPosts.map")) {

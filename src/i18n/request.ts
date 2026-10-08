@@ -7,26 +7,34 @@ import {
   quickBookingMessages,
   servicesPageMessages,
   offersPageMessages,
+  plansPageMessages,
   serviceFormsMessages,
 } from "./page-messages";
 
 /**
- * إعداد next-intl v4 للـ Server Components.
+ * إعداد next-intl v4 للـ Server Components — توجيه ببادئة لغوية.
  *
- * يقرأ اللغة من cookie ويوفّر الرسائل الأساسية + رسائل الصفحات الداخلية.
+ * اللغة مصدرها segment الـ URL ([locale]) عبر `requestLocale`
+ * (يضبطها `setRequestLocale` في اللياوت أو الـ proxy)، لا الكوكي.
+ * الكوكي يُستخدم فقط كاحتياط أخير لتوافق الإصدارات السابقة.
  */
-export default getRequestConfig(async () => {
+export default getRequestConfig(async ({ requestLocale }) => {
+  const requested = await requestLocale;
   let locale = defaultLocale;
 
-  try {
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const localeCookie = cookieStore.get("casanostra-locale")?.value;
-    if (isValidLocale(localeCookie || "")) {
-      locale = localeCookie as typeof defaultLocale;
+  if (isValidLocale(requested || "")) {
+    locale = requested as typeof defaultLocale;
+  } else {
+    try {
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      const localeCookie = cookieStore.get("casanostra-locale")?.value;
+      if (isValidLocale(localeCookie || "")) {
+        locale = localeCookie as typeof defaultLocale;
+      }
+    } catch {
+      /* fallback للّغة الافتراضية */
     }
-  } catch {
-    /* fallback للّغة الافتراضية */
   }
 
   /* الرسائل الأساسية */
@@ -41,6 +49,7 @@ export default getRequestConfig(async () => {
     quickBooking: quickBookingMessages[locale] || quickBookingMessages.ar,
     servicesPage: servicesPageMessages[locale] || servicesPageMessages.ar,
     offersPage: offersPageMessages[locale] || offersPageMessages.ar,
+    plansPage: plansPageMessages[locale] || plansPageMessages.ar,
     serviceForms: serviceFormsMessages[locale] || serviceFormsMessages.ar,
   };
 
