@@ -69,7 +69,7 @@ export function StatsSection() {
                   </div>
                 </div>
                 {/* التسمية */}
-                <span className="text-xs sm:text-sm text-muted-foreground dark:text-navy-foreground/70 font-medium text-center">
+                <span className="text-xs sm:text-sm text-muted-foreground dark:text-card-foreground/80 font-medium text-center">
                   {t(stat.labelKey)}
                 </span>
               </div>

@@ -35,7 +35,7 @@ export function SubscriptionCard() {
             </h2>
 
             {/* الوصف */}
-            <p className="text-sm sm:text-base text-muted-foreground dark:text-navy-foreground/70 leading-relaxed max-w-2xl mx-auto mb-8">
+            <p className="text-sm sm:text-base text-muted-foreground dark:text-card-foreground/80 leading-relaxed max-w-2xl mx-auto mb-8">
               {t("subscriptionDescription")}
             </p>
 
