@@ -152,10 +152,10 @@ test("sitemap excludes content without full locale translations", async ({ reque
 
   for (const locale of ["ar", "en", "tr", "fr", "ru"]) {
     for (const route of ["/blog", "/privacy", "/terms"]) {
-      expect(sitemap).not.toContain(`https://casanostra.com/${locale}${route}`);
+      expect(sitemap).not.toContain(`https://www.casanostra-tr.com/${locale}${route}`);
     }
-    expect(sitemap).toContain(`https://casanostra.com/${locale}/services`);
-    expect(sitemap).toContain(`https://casanostra.com/${locale}/services/visa`);
+    expect(sitemap).toContain(`https://www.casanostra-tr.com/${locale}/services`);
+    expect(sitemap).toContain(`https://www.casanostra-tr.com/${locale}/services/visa`);
   }
 });
 

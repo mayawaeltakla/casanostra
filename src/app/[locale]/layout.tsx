@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteConfig } from "@/lib/site-config";
 import { Cairo, Tajawal } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
@@ -56,7 +57,7 @@ const tajawal = Tajawal({
  * Metadata شاملة لتحسين SEO — عنوان، وصف، كلمات مفتاحية، Open Graph، Twitter.
  */
 const defaultMetadata: Metadata = {
-  metadataBase: new URL("https://casanostra.com"),
+  metadataBase: new URL(siteConfig.url),
   title: {
     default: "CASANOSTRA | وكالة السياحة الفاخرة في تركيا",
     template: "%s | CASANOSTRA",
@@ -92,7 +93,7 @@ const defaultMetadata: Metadata = {
     title: "CASANOSTRA | وكالة السياحة الفاخرة في تركيا",
     description:
       "باقات سياحية متكاملة، جولات خاصة، فنادق فخمة، وخدمات VIP في تركيا. اكتشف تركيا بأناقة مع CASANOSTRA.",
-    url: "https://casanostra.com",
+    url: siteConfig.url,
     siteName: "CASANOSTRA",
     locale: "ar_TR",
     type: "website",

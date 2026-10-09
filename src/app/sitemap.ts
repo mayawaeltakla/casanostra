@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
-import { servicesList } from "@/lib/site-config";
+import { servicesList, siteConfig } from "@/lib/site-config";
 import { locales } from "@/i18n/messages";
 
-const sitemapOrigin = "https://casanostra.com";
+const sitemapOrigin = siteConfig.url;
 /* مسارات مفهرسة فقط — المحتوى الجزئي (blog/privacy/terms) مستبعد عمداً.
  * كل مسار يتكرر بالبادئات الخمس (رابط واحد قابل للمشاركة لكل لغة)،
  * وترويسات Link البديلة من الـ proxy تُعلم محركات البحث بالبدائل. */
