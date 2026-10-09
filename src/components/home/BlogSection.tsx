@@ -100,7 +100,7 @@ export function BlogSection() {
                 </h3>
 
                 {/* الملخص */}
-                <p className="text-sm text-muted-foreground dark:text-navy-foreground/70 leading-relaxed line-clamp-2 mb-3">
+                <p className="text-sm text-muted-foreground dark:text-card-foreground/80 leading-relaxed line-clamp-2 mb-3">
                   {excerpt}
                 </p>
 

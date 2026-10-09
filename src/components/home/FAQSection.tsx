@@ -45,7 +45,7 @@ export function FAQSection() {
                   {faq.question}
                 </h3>
               </div>
-              <p className="text-sm text-muted-foreground dark:text-navy-foreground/70 leading-relaxed">
+              <p className="text-sm text-muted-foreground dark:text-card-foreground/80 leading-relaxed">
                 {faq.answer}
               </p>
             </div>
