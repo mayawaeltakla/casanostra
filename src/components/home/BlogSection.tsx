@@ -25,9 +25,6 @@ export function BlogSection() {
   const locale = useLocale();
   const t = useTranslations("home");
 
-  /* المحتوى مفهرس عربياً فقط (SEO) — إخفاء كامل خارج ar لمنع تسرب العربية
-   * ومتوافق مع sitemap المستبعد وrobots noindex لغير ar. */
-  if (locale !== "ar") return null;
 
   return (
     <section className="py-16 bg-background">

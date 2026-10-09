@@ -20,6 +20,7 @@ import {
   getSortedPosts,
   type BlogBlock,
 } from "@/lib/blog";
+import { getLocalizedBlogBody } from "@/lib/blog-locales";
 import { buildSimpleWhatsAppLink } from "@/lib/whatsapp";
 
 /* ============================================================================
@@ -110,6 +111,8 @@ export default async function BlogPostPage({
   if (!post) {
     notFound();
   }
+
+  const localizedContent = locale === "ar" ? post.content : (getLocalizedBlogBody(slug, locale) ?? []);
 
   const postIndex = blogPosts.findIndex((item) => item.slug === slug) + 1;
   const localizedPost = {
@@ -227,13 +230,7 @@ export default async function BlogPostPage({
             <div className="max-w-3xl mx-auto">
               {/* رسم المحتوى ديناميكياً */}
               <div className="space-y-6">
-                {locale === "ar" ? (
-                  post.content.map((block, idx) => <ContentBlock key={idx} block={block} />)
-                ) : (
-                  <p className="rounded-xl border border-gold/20 bg-gold/5 p-5 text-sm text-muted-foreground leading-relaxed">
-                    {tHome("blogFallbackNotice")}
-                  </p>
-                )}
+                {localizedContent.map((block, idx) => <ContentBlock key={idx} block={block} />)}
               </div>
 
               {/* ── بطاقة CTA "احجز رحلتك الآن" ── */}
@@ -293,7 +290,7 @@ export default async function BlogPostPage({
         {/* ================================================================
          * 3. مقالات ذات صلة
          * ================================================================ */}
-        {locale === "ar" && <section className="py-16 lg:py-20 bg-muted/30 border-t border-border">
+        <section className="py-16 lg:py-20 bg-muted/30 border-t border-border">
           <div className="container mx-auto px-4">
             {/* عنوان القسم */}
             <div className="text-center mb-10">
@@ -347,7 +344,7 @@ export default async function BlogPostPage({
               ))}
             </div>
           </div>
-        </section>}
+        </section>
       </article>
     </>
   );

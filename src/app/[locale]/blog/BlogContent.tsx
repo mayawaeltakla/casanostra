@@ -32,7 +32,7 @@ import { lt } from "@/lib/locale-text";
 
 export function BlogContent() {
   const locale = useLocale();
-  const posts = locale === "ar" ? getSortedPosts() : [];
+  const posts = getSortedPosts();
   const tHome = useTranslations("home");
   const tNav = useTranslations("nav");
   const localizedPosts = posts.map((post, index) => {
@@ -119,7 +119,7 @@ export function BlogContent() {
             </p>
           </div>
 
-          {locale === "ar" ? (
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
             {localizedPosts.map((post) => (
               <article
@@ -200,17 +200,7 @@ export function BlogContent() {
               </article>
             ))}
           </div>
-          ) : (
-            <p className="max-w-2xl mx-auto text-center text-muted-foreground">
-              {lt(locale, {
-                ar: "",
-                en: "Full articles are currently available in Arabic only. Translations are being prepared.",
-                tr: "Makalelerin tam metni şu anda yalnızca Arapça olarak mevcuttur. Çeviriler hazırlanıyor.",
-                fr: "Les articles complets sont actuellement disponibles uniquement en arabe. Les traductions sont en préparation.",
-                ru: "Полные статьи пока доступны только на арабском языке. Переводы готовятся.",
-              })}
-            </p>
-          )}
+
         </div>
       </section>
 

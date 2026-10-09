@@ -130,7 +130,7 @@ export function FeaturedOffers() {
                   </h3>
 
                   {/* الوصف */}
-                  <p className="text-sm text-muted-foreground dark:text-navy-foreground/70 leading-relaxed mb-4 flex-1">
+                  <p className="text-sm text-muted-foreground dark:text-card-foreground/80 leading-relaxed mb-4 flex-1">
                     {description}
                   </p>
 
