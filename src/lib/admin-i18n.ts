@@ -87,6 +87,8 @@ export const adminMessages: Record<AdminLocale, Record<string, string>> = {
     "editor.errorServer": "تعذّر الاتصال بالخادم",
     "editor.translatedOk": "تم الحفظ وترجمته تلقائياً إلى: {locales}",
     "editor.translatedNone": "تم الحفظ (لم تكتمل الترجمة التلقائية — يمكنك إعادة الحفظ لاحقاً)",
+    "editor.savedOk": "تم الحفظ ✓",
+    "editor.translateFailed": "تم الحفظ، لكن الترجمة التلقائية فشلت ({reason}). النص العربي منشور، وتظهر اللغات الأخرى بالعربية إلى أن تُعاد المحاولة بالحفظ مرة أخرى. إن تكرر الخطأ فأضف مفتاح ANTHROPIC_API_KEY أو OPENAI_API_KEY في إعدادات الموقع.",
     "editor.coverRequired": "صورة الغلاف مطلوبة (ارفع صورة)",
   },
   en: {
@@ -152,6 +154,8 @@ export const adminMessages: Record<AdminLocale, Record<string, string>> = {
     "editor.errorServer": "Could not reach the server",
     "editor.translatedOk": "Saved and auto-translated into: {locales}",
     "editor.translatedNone": "Saved (auto translation did not complete — you can save again later)",
+    "editor.savedOk": "Saved ✓",
+    "editor.translateFailed": "Saved, but auto-translation failed ({reason}). The Arabic text is published and other languages show Arabic until you save again. If it keeps failing, set ANTHROPIC_API_KEY or OPENAI_API_KEY in the site settings.",
     "editor.coverRequired": "Cover image is required (upload an image)",
   },
   tr: {
@@ -217,6 +221,8 @@ export const adminMessages: Record<AdminLocale, Record<string, string>> = {
     "editor.errorServer": "Sunucuya bağlanılamadı",
     "editor.translatedOk": "Kaydedildi ve şu dillere çevrildi: {locales}",
     "editor.translatedNone": "Kaydedildi (otomatik çeviri tamamlanmadı — daha sonra tekrar kaydedebilirsiniz)",
+    "editor.savedOk": "Kaydedildi ✓",
+    "editor.translateFailed": "Kaydedildi ancak otomatik çeviri başarısız oldu ({reason}). Arapça metin yayında; tekrar kaydedene kadar diğer diller Arapça görünür. Hata sürerse site ayarlarına ANTHROPIC_API_KEY veya OPENAI_API_KEY ekleyin.",
     "editor.coverRequired": "Kapak görseli gereklidir (bir görsel yükleyin)",
   },
   fr: {
@@ -282,6 +288,8 @@ export const adminMessages: Record<AdminLocale, Record<string, string>> = {
     "editor.errorServer": "Impossible de contacter le serveur",
     "editor.translatedOk": "Enregistré et traduit automatiquement en : {locales}",
     "editor.translatedNone": "Enregistré (la traduction automatique n'a pas abouti — vous pourrez réenregistrer plus tard)",
+    "editor.savedOk": "Enregistré ✓",
+    "editor.translateFailed": "Enregistré, mais la traduction automatique a échoué ({reason}). Le texte arabe est publié et les autres langues affichent l'arabe jusqu'au prochain enregistrement. Si l'erreur persiste, définissez ANTHROPIC_API_KEY ou OPENAI_API_KEY dans les paramètres du site.",
     "editor.coverRequired": "L'image de couverture est requise (téléversez une image)",
   },
   ru: {
@@ -347,6 +355,8 @@ export const adminMessages: Record<AdminLocale, Record<string, string>> = {
     "editor.errorServer": "Не удалось связаться с сервером",
     "editor.translatedOk": "Сохранено и автоматически переведено на: {locales}",
     "editor.translatedNone": "Сохранено (автоперевод не завершился — можно сохранить снова позже)",
+    "editor.savedOk": "Сохранено ✓",
+    "editor.translateFailed": "Сохранено, но автоперевод не удался ({reason}). Арабский текст опубликован; другие языки показывают арабский до повторного сохранения. Если ошибка повторяется, укажите ANTHROPIC_API_KEY или OPENAI_API_KEY в настройках сайта.",
     "editor.coverRequired": "Требуется обложка (загрузите изображение)",
   },
 };

@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { buildSimpleWhatsAppLink } from "@/lib/whatsapp";
 import { servicesList } from "@/lib/site-config";
+import { buildPageMetadata, resolveLocale } from "@/lib/seo";
 
 /* ============================================================================
  *  CASANOSTRA — صفحة الخدمات (/services)
@@ -41,10 +42,12 @@ export async function generateMetadata({
   const { locale } = await params;
   if (isValidLocale(locale)) setRequestLocale(locale);
   const t = await getTranslations("servicesPage");
-  return {
+  return buildPageMetadata({
+    locale: resolveLocale(locale),
+    route: "/services",
     title: t("metadataTitle"),
     description: t("metadataDescription"),
-  };
+  });
 }
 
 /* خريطة الأيقونات */

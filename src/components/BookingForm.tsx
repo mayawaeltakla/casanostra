@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useId } from "react";
+import { useState, useCallback, useEffect, useId } from "react";
 import {
   User,
   Phone,
@@ -90,6 +90,26 @@ export function BookingForm({
     }
     return labels;
   }, {});
+
+  /* ── زر «أنشئ رحلتك بنفسك»: يختار خيار «أريد تصميم رحلتي بنفسي» ── */
+  useEffect(() => {
+    if (serviceSlug !== "private-tours") return;
+    const pick = () => {
+      const options = fields.find((f) => f.name === "tourType")?.options;
+      const custom = options?.[options.length - 1];
+      if (custom) {
+        setFormData((prev) => ({ ...prev, tourType: custom }));
+        setErrors((prev) => {
+          const next = { ...prev };
+          delete next.tourType;
+          return next;
+        });
+      }
+    };
+    window.addEventListener("casanostra:create-own-trip", pick);
+    if (window.location.hash === "#create-own-trip") pick();
+    return () => window.removeEventListener("casanostra:create-own-trip", pick);
+  }, [fields, serviceSlug]);
 
   /* ── تحديث قيمة حقل عادي ── */
   const updateField = useCallback((name: string, value: string) => {

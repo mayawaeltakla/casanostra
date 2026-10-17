@@ -87,8 +87,8 @@ export async function generateMetadata({
         description: dbPost.excerpt,
         images: [dbPost.coverImage],
       },
-      /* المقالات مترجمة آلياً للغات الخمس → فهرسة كاملة + hreflang */
-      robots: { index: true, follow: true },
+      /* فهرسة اللغة فقط إن وُجدت ترجمة فعلية لها (وإلا فالنص عربي مكرر → noindex) */
+      robots: { index: dbPost.translated, follow: true },
       alternates: {
         canonical: `/${locale}/blog/${slug}`,
         languages: {

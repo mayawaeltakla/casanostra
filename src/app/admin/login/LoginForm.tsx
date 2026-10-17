@@ -38,12 +38,21 @@ export function LoginForm() {
         router.refresh();
         return;
       }
-      const data = (await res.json().catch(() => ({}))) as { error?: string };
-      setError(
-        res.status === 503
-          ? data.error || t("login.notSetup")
-          : data.error || t("login.error"),
-      );
+      const data = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        code?: string;
+        missing?: string[];
+      };
+      if (res.status === 503) {
+        const names = data.missing?.length ? ` (${data.missing.join(", ")})` : "";
+        setError(
+          data.code === "no-tables"
+            ? data.error || t("login.notSetup")
+            : `${t("login.notSetup")}${names}`,
+        );
+        return;
+      }
+      setError(data.error || t("login.error"));
     } catch {
       setError(t("login.serverError"));
     } finally {

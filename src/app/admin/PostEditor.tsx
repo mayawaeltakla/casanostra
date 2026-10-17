@@ -131,12 +131,22 @@ export function PostEditor({
         body: JSON.stringify(state),
       });
       if (res.ok) {
-        const data = (await res.json().catch(() => ({}))) as { translated?: string[] };
+        const data = (await res.json().catch(() => ({}))) as { id?: string; translated?: string[]; translateError?: string };
         const translated = data.translated ?? [];
+        if (data.translateError) {
+          /* فشل الترجمة: نُظهر السبب الحقيقي (لا نبتلعه) ونُبقي المدير ليعيد الحفظ.
+           * المقال محفوظ فعلاً؛ بعد إنشاء جديد ننتقل لصفحة تعديله كي لا يُنشأ مرتين. */
+          setError(t("editor.translateFailed", { reason: data.translateError.slice(0, 160) }));
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          if (!postId && data.id) {
+            setTimeout(() => router.replace(`/admin/posts/${data.id}`), 7000);
+          }
+          return;
+        }
         setSuccess(
           translated.length > 0
             ? t("editor.translatedOk", { locales: translated.map((l) => ADMIN_LOCALE_META[l as AdminLocale]?.label ?? l).join("، ") })
-            : t("editor.translatedNone"),
+            : t("editor.savedOk"),
         );
         /* البقاء في المحرّر لعرض رسالة النجاح ثم العودة للوحة */
         setTimeout(() => {

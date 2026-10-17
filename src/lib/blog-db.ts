@@ -12,7 +12,10 @@ import { locales, type Locale } from "@/i18n/messages";
 export const TRANSLATION_FIELDS = ["title", "excerpt", "category", "author", "body"] as const;
 export type TranslationField = (typeof TRANSLATION_FIELDS)[number];
 export type ArticleFields = Record<TranslationField, string>;
-export type ArticleTranslations = Partial<Record<Locale, Partial<ArticleFields>>>;
+export type ArticleTranslations = Partial<Record<Locale, Partial<ArticleFields>>> & {
+  /** وسم داخلي: لغات مُترجمة آلياً → بصمة النص العربي وقت الترجمة (لإعادة الترجمة عند تعديل العربي) */
+  _auto?: Partial<Record<Locale, string>>;
+};
 
 /** مقال جاهز للعرض بلغة واحدة (قابل للتمرير من Server إلى Client Component). */
 export interface DbPostView {
@@ -25,6 +28,8 @@ export interface DbPostView {
   category: string;
   author: string;
   blocks: BlogBlock[];
+  /** هل توجد ترجمة فعلية بهذه اللغة (وإلا فالنص عربي احتياطي) */
+  translated: boolean;
 }
 
 function pickField(
@@ -60,6 +65,7 @@ function toView(
     category: pickField(translations, locale, "category"),
     author: pickField(translations, locale, "author") || "CASANOSTRA",
     blocks: parseArticleBody(pickField(translations, locale, "body")),
+    translated: locale === "ar" || Boolean(translations[locale]?.title?.trim() && translations[locale]?.body?.trim()),
   };
 }
 

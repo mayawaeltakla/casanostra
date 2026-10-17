@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   SESSION_COOKIE,
   authenticate,
+  missingAdminEnv,
   createSessionToken,
   sessionCookieOptions,
 } from "@/lib/admin-auth";
@@ -46,9 +47,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "طلب غير صالح" }, { status: 400 });
   }
 
-  if (!process.env.DATABASE_URL || !process.env.ADMIN_SESSION_SECRET) {
+  const missing = missingAdminEnv();
+  if (missing.length > 0) {
+    /* أسماء المتغيرات الناقصة فقط — لا تُكشف أي قيم */
     return NextResponse.json(
-      { error: "لوحة التحكم غير مهيّأة بعد (متغيرات البيئة ناقصة)" },
+      { error: "لوحة التحكم غير مهيّأة بعد (متغيرات البيئة ناقصة)", code: "missing-env", missing },
       { status: 503 },
     );
   }
@@ -69,7 +72,14 @@ export async function POST(request: Request) {
     resetRateLimit(`login:${ip}`);
     response.cookies.set(SESSION_COOKIE, createSessionToken(userId), sessionCookieOptions);
     return response;
-  } catch {
-    return NextResponse.json({ error: "تعذّر الاتصال بقاعدة البيانات" }, { status: 500 });
+  } catch (error) {
+    const code = (error as { code?: string })?.code;
+    if (code === "P2021" || code === "P2022") {
+      return NextResponse.json(
+        { error: "جداول قاعدة البيانات غير منشأة بعد — نفّذ الأمر: bun run db:push", code: "no-tables" },
+        { status: 503 },
+      );
+    }
+    return NextResponse.json({ error: "تعذّر الاتصال بقاعدة البيانات", code: "db-error" }, { status: 500 });
   }
 }

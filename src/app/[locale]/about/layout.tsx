@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { aboutMessages } from "@/i18n/page-messages";
 import { defaultLocale, isValidLocale, type Locale } from "@/i18n/messages";
+import { pageAlternates } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -24,8 +25,9 @@ export async function generateMetadata({
   }[locale];
 
   return {
-    title: `${localized.title} | CASANOSTRA`,
+    title: localized.title,
     description: localized.intro ?? "CASANOSTRA — About us",
+    alternates: pageAlternates(locale, "/about"),
     keywords:
       locale === "ar"
         ? ["من نحن CASANOSTRA", "وكالة سياحة تركيا", "قيم الشركة", "مواقع CASANOSTRA"]

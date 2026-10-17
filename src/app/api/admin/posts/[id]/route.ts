@@ -2,38 +2,12 @@ import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { getAdminUserId } from "@/lib/admin-auth";
 import { validateArticleInput } from "@/lib/blog-admin";
-import { autoTranslateArticle } from "@/lib/auto-translate";
+import { translateForSave } from "@/lib/auto-translate";
 import { db } from "@/lib/db";
-import { locales, type Locale } from "@/i18n/messages";
-import type { ArticleFields, ArticleTranslations } from "@/lib/blog-db";
+import type { ArticleTranslations } from "@/lib/blog-db";
 
 export const runtime = "nodejs";
-
-/** يدمج الترجمة التلقائية مع الإدخال اليدوي — اليدوي يتفوق على التلقائي */
-function mergeAutoTranslations(
-  manual: ArticleTranslations,
-  auto: ArticleTranslations,
-): { merged: ArticleTranslations; translatedLocales: Locale[] } {
-  const merged: ArticleTranslations = { ...manual };
-  const translatedLocales: Locale[] = [];
-
-  for (const locale of locales) {
-    if (locale === "ar") continue;
-    const autoFields = auto[locale] as Partial<ArticleFields> | undefined;
-    if (!autoFields) continue;
-
-    const manualFields = (manual[locale] ?? {}) as Partial<ArticleFields>;
-    const combined: Partial<ArticleFields> = { ...autoFields };
-    for (const [key, value] of Object.entries(manualFields)) {
-      if (typeof value === "string" && value.trim()) {
-        (combined as Record<string, string>)[key] = value;
-      }
-    }
-    merged[locale] = combined;
-    translatedLocales.push(locale);
-  }
-  return { merged, translatedLocales };
-}
+export const maxDuration = 60;
 
 export async function PUT(
   request: Request,
@@ -61,50 +35,40 @@ export async function PUT(
       return NextResponse.json({ error: "هذا الرابط مستخدم لمقال آخر، اختر رابطاً مختلفاً" }, { status: 409 });
     }
 
-    /* اللغات التي تحتاج ترجمة: لا يوجد لها أي حقل يدوي محفوظ */
     const previous = await db.blogArticle.findUnique({
       where: { id },
       select: { translations: true },
     });
-    const previousTranslations = (previous?.translations ?? {}) as ArticleTranslations;
-    const needsTranslation = locales.some(
-      (locale) => locale !== "ar" && !previousTranslations[locale],
-    );
+    const previousTranslations = (previous?.translations ?? null) as ArticleTranslations | null;
 
     await db.blogArticle.update({
       where: { id },
-      data: { ...result.data, translations: result.data.translations as unknown as Prisma.InputJsonValue },
+      data: {
+        ...result.data,
+        /* نحفظ وسم _auto السابق كي لا يضيع إن لم تتم ترجمة جديدة */
+        translations: {
+          ...result.data.translations,
+          ...(previousTranslations?._auto ? { _auto: previousTranslations._auto } : {}),
+        } as unknown as Prisma.InputJsonValue,
+      },
     });
 
-    /* ترجمة تلقائية عند نقص لغة كاملة (تملأ الفراغات فقط) */
+    /* ترجمة تلقائية: للغات الفارغة، وإعادة ترجمة ما لم يُحرَّر يدوياً إن تغيّر العربي */
     let translated: string[] = [];
-    if (needsTranslation) {
-      try {
-        const ar = result.data.translations.ar;
-        if (ar?.title && ar?.excerpt && ar?.category && ar?.body) {
-          const auto = await autoTranslateArticle({
-            title: ar.title,
-            excerpt: ar.excerpt,
-            category: ar.category,
-            author: ar.author ?? "CASANOSTRA",
-            body: ar.body,
-          });
-          const { merged, translatedLocales } = mergeAutoTranslations(
-            result.data.translations,
-            auto,
-          );
-          translated = translatedLocales;
-          await db.blogArticle.update({
-            where: { id },
-            data: { translations: merged as unknown as Prisma.InputJsonValue },
-          });
-        }
-      } catch {
-        /* فشل الترجمة لا يفشل الحفظ */
-      }
+    let translateError: string | undefined;
+    try {
+      const outcome = await translateForSave(result.data.translations, previousTranslations);
+      translated = outcome.translated;
+      translateError = outcome.error;
+      await db.blogArticle.update({
+        where: { id },
+        data: { translations: outcome.translations as unknown as Prisma.InputJsonValue },
+      });
+    } catch (error) {
+      translateError = error instanceof Error ? error.message : "failed";
     }
 
-    return NextResponse.json({ ok: true, translated });
+    return NextResponse.json({ ok: true, translated, translateError });
   } catch {
     return NextResponse.json({ error: "تعذّر حفظ التعديلات" }, { status: 500 });
   }

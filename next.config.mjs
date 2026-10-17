@@ -31,19 +31,20 @@ const nextConfig = {
    *   الثابت من الديناميكي ويدير s-maxage/stale-while-revalidate بنفسه،
    *   وتجاوزها قد يكسر كشف اللغة في الـ proxy. لا Vary مطلوب لأن كل
    *   لغة لها URL مميز ببادئتها.
-   * - الأصول المبنية (/_next/static): مجزأة بأسماء مشفرة → غير قابلة للتغير.
+   * - الأصول المبنية (/_next/static): يتولّى Next.js ترويسة immutable بنفسه —
+   *   لا نكرّرها هنا لتجنّب تحذير البناء عند تجاوز ترويسات Next الداخلية.
    * - الصور/الفيديو (/images, /videos): ثابتة عملياً وتتغير فقط مع deploy.
    * - sitemap/robots: قصيرة لحداثة الفهرسة. /api: ديناميكي بلا تخزين.
    */
   async headers() {
     return [
       {
-        source: "/_next/static/:path*",
+        source: "/:path*",
         headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         ],
       },
       {

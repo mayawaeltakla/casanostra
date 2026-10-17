@@ -25,13 +25,13 @@ import {
   ChevronLeft,
   Phone,
   Star,
-  Sparkles,
 } from "lucide-react";
 import { servicesList, siteConfig } from "@/lib/site-config";
 import { JsonLd } from "@/components/JsonLd";
 import { services as serviceFormDefs, getServiceBySlug } from "@/lib/services";
 import { serviceDetailMessages, type ServiceDetailContent } from "@/i18n/service-details";
 import { BookingForm } from "@/components/BookingForm";
+import { CreateOwnTripButton } from "@/components/CreateOwnTripButton";
 
 /** خريطة الأيقونات — لربط اسم الأيقونة (نص) بمكوّن lucide-react فعلي */
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -263,13 +263,7 @@ export default async function ServicePage({
             </a>
             {/* زر «أنشئ رحلتك الخاصة بنفسك» — يظهر في خدمة الرحلات الخاصة فقط */}
             {slug === "private-tours" && (
-              <a
-                href="#booking-form"
-                className="group inline-flex items-center gap-2 bg-gold hover:bg-gold-300 text-navy font-bold px-6 py-2.5 rounded-lg text-sm sm:text-base transition-all hover:scale-105 active:scale-95 shadow-gold"
-              >
-                <Sparkles className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                <span>{t("createOwnTrip")}</span>
-              </a>
+              <CreateOwnTripButton label={t("createOwnTrip")} />
             )}
           </div>
         </div>

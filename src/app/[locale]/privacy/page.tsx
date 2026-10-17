@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
-import { getLocale } from "next-intl/server";
 import { PrivacyContent } from "./PrivacyContent";
+import { buildPageMetadata, resolveLocale, STATIC_PAGE_META } from "@/lib/seo";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getLocale();
-  return {
-    title: "Privacy Policy | CASANOSTRA",
-    description: "CASANOSTRA privacy policy — how we collect, use, and protect your data.",
-    robots: { index: locale === "ar", follow: true },
-    alternates: { canonical: "/privacy", languages: {} },
-  };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = resolveLocale((await params).locale);
+  return buildPageMetadata({
+    locale,
+    route: "/privacy",
+    ...STATIC_PAGE_META.privacy[locale],
+    index: locale === "ar",
+  });
 }
 
 export default function PrivacyPage() {

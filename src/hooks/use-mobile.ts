@@ -2,18 +2,20 @@ import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768
 
+/* matchMedia نظام خارجي عن React؛ نقرأه عبر useSyncExternalStore بدل
+ * setIsMobile داخل useEffect. هذا يمنع التحديث المتزامن للحالة داخل الـ effect
+ * (cascading renders) ويحافظ على نفس السلوك: false على الخادم، والقيمة الحقيقية
+ * بعد الترطيب، مع الاستجابة لتغيّر حجم الشاشة. */
+const subscribe = (onStoreChange: () => void) => {
+  const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+  mql.addEventListener("change", onStoreChange)
+  return () => mql.removeEventListener("change", onStoreChange)
+}
+
+const getSnapshot = () => window.innerWidth < MOBILE_BREAKPOINT
+
+const getServerSnapshot = () => false
+
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
-
-  React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    }
-    mql.addEventListener("change", onChange)
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    return () => mql.removeEventListener("change", onChange)
-  }, [])
-
-  return !!isMobile
+  return React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
 }

@@ -8,8 +8,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+/* PostgreSQL (Prisma Postgres) — لا يوجد احتياطي SQLite بعد الآن.
+ * DATABASE_URL إلزامي: سلسلة اتصال postgresql:// أو prisma+postgres://. */
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

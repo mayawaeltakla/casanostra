@@ -6,11 +6,20 @@ import { db } from "@/lib/db";
 
 const sitemapOrigin = siteConfig.url;
 
+/* مسار مفهرس واحد. `lastModified` اختياري: توفّره مقالات المدونة (الثابتة
+ * ومن قاعدة البيانات) دون بقية المسارات الثابتة. هذا النوع الموحّد هو ما يجعل
+ * دمج `indexableRoutes` مع `blogRoutes` قابلاً للتفكيك بأمان في `sitemap()`. */
+type SitemapRoute = {
+  route: string;
+  priority: number;
+  lastModified?: Date;
+};
+
 /* المسارات المفهرسة — كل مسار يتكرر بالبادئات الخمس (رابط قابل للمشاركة لكل لغة).
  * المدونة أصبحت مفهرسة بالكامل: صفحة الفهرس + المقالات الثابتة + مقالات
  * لوحة التحكم (من قاعدة البيانات) بجميع اللغات.
  * ترويسات Link البديلة من الـ proxy + hreflang بالـ HTML تُعلم محركات البحث بالبدائل. */
-const indexableRoutes: { route: string; priority: number }[] = [
+const indexableRoutes: SitemapRoute[] = [
   { route: "/", priority: 1 },
   { route: "/services", priority: 0.9 },
   ...servicesList.map((service) => ({
@@ -31,9 +40,7 @@ const indexableRoutes: { route: string; priority: number }[] = [
 export const revalidate = 3600;
 
 /** أرقام مقالات لوحة التحكم المنشورة + تاريخ آخر تحديث لكل منها. */
-async function getDbArticleEntries(): Promise<
-  { route: string; priority: number; lastModified?: Date }[]
-> {
+async function getDbArticleEntries(): Promise<SitemapRoute[]> {
   try {
     const articles = await db.blogArticle.findMany({
       where: { published: true },
@@ -52,13 +59,13 @@ async function getDbArticleEntries(): Promise<
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   /* المقالات الثابتة (من ملفات TS) + مقالات قاعدة البيانات (لوحة التحكم) */
-  const staticBlogRoutes = blogPosts.map((post) => ({
-    route: `/blog/${post.slug}` as string,
+  const staticBlogRoutes: SitemapRoute[] = blogPosts.map((post) => ({
+    route: `/blog/${post.slug}`,
     priority: 0.7,
     lastModified: new Date(post.publishedAt),
   }));
   const dbBlogRoutes = await getDbArticleEntries();
-  const blogRoutes = [...staticBlogRoutes, ...dbBlogRoutes];
+  const blogRoutes: SitemapRoute[] = [...staticBlogRoutes, ...dbBlogRoutes];
 
   return locales.flatMap((locale) =>
     [...indexableRoutes, ...blogRoutes].map(({ route, priority, lastModified }) => ({

@@ -129,30 +129,50 @@ export function QuickBookingContent() {
                 <Link
                   key={service.slug}
                   href={`/services/${service.slug}`}
-                  className="group relative bg-card border border-border rounded-2xl p-6 hover:border-gold/40 hover:shadow-luxury hover:-translate-y-1 transition-all duration-300"
+                  className="group relative flex min-h-[18rem] sm:min-h-[22rem] flex-col justify-end bg-navy border border-border rounded-2xl p-6 hover:border-gold/40 hover:shadow-luxury hover:-translate-y-1 transition-all duration-300 overflow-hidden"
                 >
+                  {/* صورة الخدمة كخلفية للبطاقة */}
+                  <Image
+                    src={service.heroImage}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    style={{ objectPosition: service.heroImagePosition || "center" }}
+                    aria-hidden="true"
+                  />
+                  {/* تدرّج داكن ثابت (لا يتأثر بالوضع الليلي) لضمان وضوح النص */}
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(to top, hsl(222 42% 12% / 0.96) 0%, hsl(222 42% 12% / 0.78) 45%, hsl(222 42% 12% / 0.3) 100%)",
+                    }}
+                    aria-hidden="true"
+                  />
+
                   {/* رقم ترتيبي خفيف */}
-                  <span className="absolute top-4 left-4 text-5xl font-bold text-navy/5 group-hover:text-gold/10 transition-colors">
+                  <span className="absolute top-4 left-4 text-5xl font-bold text-white/20 group-hover:text-gold/40 transition-colors">
                     {String(index + 1).padStart(2, "0")}
                   </span>
 
                   {/* الأيقونة */}
-                  <div className="relative inline-flex items-center justify-center w-14 h-14 rounded-xl bg-navy/5 group-hover:bg-gold/10 transition-colors mb-4">
-                    <Icon className="w-7 h-7 text-navy group-hover:text-gold transition-colors" />
+                  <div className="relative inline-flex items-center justify-center w-14 h-14 rounded-xl bg-white/15 backdrop-blur-sm group-hover:bg-gold/20 transition-colors mb-4">
+                    <Icon className="w-7 h-7 text-white group-hover:text-gold transition-colors" />
                   </div>
 
                   {/* العنوان */}
-                  <h3 className="text-lg font-bold text-navy mb-2 group-hover:text-gold transition-colors">
+                  <h3 className="relative text-lg font-bold text-white mb-2 group-hover:text-gold transition-colors">
                     {tServices(`${serviceKey}.title`)}
                   </h3>
 
                   {/* الوصف */}
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4 min-h-[3.5rem]">
+                  <p className="relative text-sm text-white/85 leading-relaxed mb-4">
                     {tServices(`${serviceKey}.description`)}
                   </p>
 
-                  {/* زر {t("bookNow")} */}
-                  <div className="flex items-center gap-1 text-sm font-medium text-gold">
+                  {/* زر الحجز */}
+                  <div className="relative flex items-center gap-1 text-sm font-bold text-gold">
                     <span>{t("bookNow")}</span>
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                   </div>

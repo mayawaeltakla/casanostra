@@ -18,12 +18,26 @@ import { db } from "@/lib/db";
 export const SESSION_COOKIE = "cn_admin";
 const SESSION_SECONDS = 60 * 60 * 24 * 7;
 
+/** أسماء (لا قيم) الإعدادات الناقصة التي تمنع الدخول إلى اللوحة */
+export function missingAdminEnv(): string[] {
+  const missing: string[] = [];
+  if (!process.env.ADMIN_EMAIL) missing.push("ADMIN_EMAIL");
+  if (!process.env.ADMIN_PASSWORD) missing.push("ADMIN_PASSWORD");
+  return missing;
+}
+
+/**
+ * مفتاح توقيع الجلسة: ADMIN_SESSION_SECRET إن وُجد (16+ حرفاً)، وإلا يُشتق
+ * من ADMIN_PASSWORD حتى لا يتعطل الدخول بسبب متغير واحد منسي.
+ */
 function getSecret(): string {
   const secret = process.env.ADMIN_SESSION_SECRET;
-  if (!secret || secret.length < 16) {
-    throw new Error("ADMIN_SESSION_SECRET is not configured (min 16 chars)");
+  if (secret && secret.length >= 16) return secret;
+  const password = process.env.ADMIN_PASSWORD;
+  if (!password) {
+    throw new Error("ADMIN_SESSION_SECRET or ADMIN_PASSWORD must be configured");
   }
-  return secret;
+  return createHmac("sha256", "casanostra-admin-session").update(password).digest("hex");
 }
 
 export function hashPassword(password: string): string {
