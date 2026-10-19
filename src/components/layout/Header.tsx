@@ -20,6 +20,7 @@ import {
   MoonStar,
   HeartPulse,
   MoreHorizontal,
+  GraduationCap,
   Instagram,
   Facebook,
   Youtube,
@@ -52,6 +53,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   HeartPulse,
   MoreHorizontal,
   Compass,
+  GraduationCap,
 };
 
 /** مفتاح الترجمة لكل عنصر تنقّل (title الحالي عربي فقط، نوافقه مع مفاتيح next-intl) */

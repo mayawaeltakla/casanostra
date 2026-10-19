@@ -15,6 +15,7 @@ import {
   MoonStar,
   HeartPulse,
   MoreHorizontal,
+  GraduationCap,
   Sparkles,
   Phone,
   ArrowLeft,
@@ -30,7 +31,7 @@ import { buildPageMetadata, resolveLocale } from "@/lib/seo";
  * ============================================================================
  *
  *  1. مقدمة عن الشركة + عنصر تحفيزي ذهبي
- *  2. شبكة الخدمات الـ11 بأيقونات
+ *  2. شبكة الخدمات الـ12 بأيقونات
  *  3. قسم تحفيزي ختامي + زر واتساب
  * ============================================================================ */
 
@@ -63,6 +64,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   MoonStar,
   HeartPulse,
   MoreHorizontal,
+  GraduationCap,
 };
 
 /* قائمة الخدمات مشتقة من المصدر الوحيد servicesList لمنع انحراف slug/أيقونة.
@@ -144,7 +146,7 @@ export default async function ServicesPage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-       * 2. شبكة الخدمات الـ11
+       * 2. شبكة الخدمات الـ12
        * ═══════════════════════════════════════════════════════════════ */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">

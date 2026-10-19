@@ -15,6 +15,7 @@ import {
   MoreHorizontal,
   ChevronLeft,
   Compass,
+  GraduationCap,
 } from "lucide-react";
 import { servicesList } from "@/lib/site-config";
 import { useTranslations } from "next-intl";
@@ -38,10 +39,11 @@ const iconMap: Record<
   HeartPulse,
   MoreHorizontal,
   Compass,
+  GraduationCap,
 };
 
 /**
- * ServicesGrid — شبكة الخدمات الـ11.
+ * ServicesGrid — شبكة الخدمات الـ12.
  *
  * - شريط علوي بأيقونة + عنوان القسم.
  * - شبكة: 1 عمود (موبايل) / 2 (تابلت) / 3 (ديسكتوب).

@@ -87,11 +87,11 @@ export const STATIC_PAGE_META: Record<"contact" | "faq" | "help" | "quickBooking
     ru: { title: "Центр помощи", description: "Центр помощи CASANOSTRA: форма обратной связи, WhatsApp, e-mail и часы работы." },
   },
   quickBooking: {
-    ar: { title: "الحجز السريع", description: "اختر بسرعة من 11 خدمة سياحية متكاملة في تركيا: الإقامات، التأشيرات، السيارات VIP، الفنادق، الطيران، الجولات، الحج والعمرة والسياحة العلاجية." },
-    en: { title: "Quick Booking", description: "Quickly choose from 11 integrated tourism services in Turkey: residence, visas, VIP cars, hotels, flights, tours, Hajj & Umrah and medical tourism." },
-    tr: { title: "Hızlı Rezervasyon", description: "Türkiye'de 11 entegre turizm hizmeti arasından hızlıca seçin: oturma izni, vize, VIP araçlar, oteller, uçuşlar, turlar, Hac-Umre ve sağlık turizmi." },
-    fr: { title: "Réservation rapide", description: "Choisissez rapidement parmi 11 services touristiques en Turquie : séjour, visas, voitures VIP, hôtels, vols, excursions, Hajj et Omra, tourisme médical." },
-    ru: { title: "Быстрое бронирование", description: "Быстро выберите одну из 11 туристических услуг в Турции: ВНЖ, визы, VIP-авто, отели, авиабилеты, туры, Хадж и Умра, медицинский туризм." },
+    ar: { title: "الحجز السريع", description: "اختر بسرعة من 12 خدمة سياحية متكاملة في تركيا: الإقامات، التأشيرات، السيارات VIP، الفنادق، الطيران، الجولات، الحج والعمرة والسياحة العلاجية." },
+    en: { title: "Quick Booking", description: "Quickly choose from 12 integrated tourism services in Turkey: residence, visas, VIP cars, hotels, flights, tours, Hajj & Umrah and medical tourism." },
+    tr: { title: "Hızlı Rezervasyon", description: "Türkiye'de 12 entegre turizm hizmeti arasından hızlıca seçin: oturma izni, vize, VIP araçlar, oteller, uçuşlar, turlar, Hac-Umre ve sağlık turizmi." },
+    fr: { title: "Réservation rapide", description: "Choisissez rapidement parmi 12 services touristiques en Turquie : séjour, visas, voitures VIP, hôtels, vols, excursions, Hajj et Omra, tourisme médical." },
+    ru: { title: "Быстрое бронирование", description: "Быстро выберите одну из 12 туристических услуг в Турции: ВНЖ, визы, VIP-авто, отели, авиабилеты, туры, Хадж и Умра, медицинский туризм." },
   },
   privacy: {
     ar: { title: "سياسة الخصوصية", description: "سياسة خصوصية CASANOSTRA: كيف نجمع بياناتك ونستخدمها ونحميها." },

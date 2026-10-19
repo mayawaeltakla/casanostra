@@ -19,6 +19,7 @@ import {
   HeartPulse,
   MoreHorizontal,
   Compass,
+  GraduationCap,
 } from "lucide-react";
 import { servicesList } from "@/lib/site-config";
 import { buildSimpleWhatsAppLink } from "@/lib/whatsapp";
@@ -28,7 +29,7 @@ import { useTranslations } from "next-intl";
  *  CASANOSTRA — صفحة {t("title")} (/quick-booking)
  * ============================================================================
  *
- *  شبكة أيقونات الخدمات الـ11 — كل أيقونة تنقل لصفحة الخدمة الخاصة بها.
+ *  شبكة أيقونات الخدمات الـ12 — كل أيقونة تنقل لصفحة الخدمة الخاصة بها.
  *  نفس تصميم شبكة الخدمات في الصفحة الرئيسية لكن بصورة أكبر وتركيز أعلى على
  *  اختيار الخدمة بسرعة.
  * ============================================================================ */
@@ -46,6 +47,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   HeartPulse,
   MoreHorizontal,
   Compass,
+  GraduationCap,
 };
 
 export function QuickBookingContent() {
@@ -102,7 +104,7 @@ export function QuickBookingContent() {
       </section>
 
       {/* ================================================================
-       * 2. شبكة الخدمات الـ11
+       * 2. شبكة الخدمات الـ12
        * ================================================================ */}
       <section className="py-20 lg:py-24 bg-background">
         <div className="container mx-auto px-4">

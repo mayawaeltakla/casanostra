@@ -7,6 +7,30 @@ export interface ServiceDetailContent {
   excluded: string[];
   /** عنوان تسويقي اختياري (موضعه position في site-config) */
   marketing?: { title: string; subtitle: string };
+
+  /* ------------------------------------------------------------------
+   * أقسام إضافية اختيارية — تُعرَّف بالعربية في site-config.ts
+   * وتُترجَم هنا لبقية اللغات. الخدمات التي لا تعرّفها لا يتغير شكلها.
+   * ------------------------------------------------------------------ */
+
+  /** نص بديل لصورة الغلاف */
+  heroImageAlt?: string;
+  /** نصوص بديلة لصور المعرض بنفس ترتيبها */
+  galleryImagesAlt?: string[];
+  /** قسم «باقة الخدمات الشاملة» */
+  bundle?: { heading: string; items: { title: string; description: string }[] };
+  /**
+   * قسم الشركاء (الجامعات).
+   * `name` الاسم في هذه اللغة، و`official` الاسم الرسمي بالتركية.
+   * إذا كان الاسم الرسمي مطابقاً للاسم المحلي (التركية) اترك `official` فارغاً.
+   */
+  universities?: {
+    heading: string;
+    intro: string;
+    items: { name: string; official: string }[];
+  };
+  /** قسم العرض الترويجي — نسبة الخصم تُعرَّف مرة واحدة في site-config */
+  promo?: { heading: string; description: string };
 }
 
 type NonArabicLocale = Exclude<Locale, "ar">;
@@ -115,6 +139,44 @@ export const serviceDetailMessages: Record<NonArabicLocale, ServiceDetailCatalog
       included: ["Consultation to identify the service you need", "Full coordination with service providers", "Booking and appointment confirmation", "Follow-up until the service is complete", "24/7 support"],
       excluded: ["The service cost itself, determined for each request", "Personal purchases", "Tips"],
     },
+    "student-services": {
+      description: "At CASANOSTRA we believe the start of your academic future deserves a smooth beginning free of complications. That is why we designed the comprehensive \"Student Services\" package to be your trusted advisor and your legal and logistical support, from the moment you consider studying in Turkey until you are fully settled at your university.",
+      features: [],
+      included: [],
+      excluded: [],
+      heroImageAlt: "University students walking together in front of a campus building",
+      galleryImagesAlt: ["A student arriving at the airport with his luggage", "A furnished student room prepared for studying", "Students studying inside the university library"],
+      bundle: {
+        heading: "Our comprehensive student services package",
+        items: [
+          { title: "University admission", description: "We secure your academic acceptance at the best private universities in Turkey and advise you on choosing the major that best fits your future." },
+          { title: "Securing suitable student housing", description: "We provide safe and comfortable housing options — student dormitories or shared flats — close to your campus and within your budget." },
+          { title: "Booking the cheapest flight tickets", description: "We secure the best student flight offers to reduce your travel costs." },
+          { title: "Luxury transfer and reception services", description: "We welcome you at the airport as soon as you arrive with our VIP car fleet and drive you to your accommodation in complete comfort and safety." },
+          { title: "Student residence permit and health insurance", description: "We handle all the legal procedures for your student residence file, book the appointment, and provide the mandatory approved health insurance." },
+          { title: "Equivalency of secondary and university certificates", description: "We help you complete the certificate equivalency procedures (Denklik) and prepare the required documents before the Turkish Ministry of Higher Education." },
+          { title: "Opening a bank account", description: "We accompany you step by step to open an official Turkish bank account and obtain your debit card to make your financial transactions easier." },
+          { title: "Obtaining a SIM card", description: "We help you buy and activate a Turkish phone line and set up the internet packages suitable for student use as soon as you arrive." },
+          { title: "Obtaining the student transport card", description: "We obtain the discounted student transport card (İndirimli Kart) for easy and economical travel around the city." },
+        ],
+      },
+      universities: {
+        heading: "Our partners among Turkey's long-established universities",
+        intro: "At CASANOSTRA we are authorised agents of Turkey's most prominent and strongest universities, and through this partnership we provide you with guaranteed seats and exclusive discounts:",
+        items: [
+          { name: "Haliç University", official: "Haliç Üniversitesi" },
+          { name: "Üsküdar University", official: "Üsküdar Üniversitesi" },
+          { name: "Fenerbahçe University", official: "Fenerbahçe Üniversitesi" },
+          { name: "Beykent University", official: "Beykent Üniversitesi" },
+          { name: "Kent University", official: "Kent Üniversitesi" },
+          { name: "Beykoz University", official: "Beykoz Üniversitesi" },
+        ],
+      },
+      promo: {
+        heading: "A special discount on the comprehensive student services package in Turkey.",
+        description: "Get an exclusive discount when you request the comprehensive student services package (admission, residence permit, housing, and airport reception).",
+      },
+    },
   },
   tr: {
     "reservations-turkey": {
@@ -187,6 +249,44 @@ export const serviceDetailMessages: Record<NonArabicLocale, ServiceDetailCatalog
       features: [{ title: "Geniş hizmet yelpazesi", description: "20'den fazla farklı ek hizmet." }, { title: "Tam özelleştirme", description: "Belirttiğiniz isteğe göre düzenleme." }, { title: "Adil fiyatlar", description: "Aracısız, rekabetçi fiyatlar." }, { title: "VIP hizmet", description: "Her ayrıntıda seçkin bir deneyim." }],
       included: ["İhtiyacınız olan hizmeti belirlemek için danışmanlık", "Hizmet sağlayıcılarla eksiksiz koordinasyon", "Rezervasyon ve randevu onayı", "Hizmet tamamlanana kadar takip", "7/24 destek"],
       excluded: ["Hizmetin kendisinin ücrete tabi maliyeti", "Kişisel alışverişler", "Bahşişler"],
+    },
+    "student-services": {
+      description: "CASANOSTRA olarak akademik geleceğinizin başlangıcının, karmaşadan uzak ve konforlu bir başlangıcı hak ettiğine inanıyoruz. Bu nedenle kapsamlı \"Öğrenci Hizmetleri\" paketini; Türkiye'de eğitim almayı düşündüğünüz andan üniversitenizde tamamen yerleşene kadar güvenilir danışmanınız, hukuki ve lojistik destekçiniz olacak şekilde tasarladık.",
+      features: [],
+      included: [],
+      excluded: [],
+      heroImageAlt: "Üniversite öğrencileri kampüs binasının önünde birlikte yürüyor",
+      galleryImagesAlt: ["Havalimanına bavuluyla yeni gelen bir öğrenci", "Ders çalışmaya hazır, döşenmiş bir öğrenci odası", "Üniversite kütüphanesinde ders çalışan öğrenciler"],
+      bundle: {
+        heading: "Kapsamlı öğrenci hizmetleri paketimiz",
+        items: [
+          { title: "Üniversite kabulleri", description: "Türkiye'nin en iyi vakıf üniversitelerinde akademik kabulünüzü sağlıyor ve geleceğinize en uygun bölümü seçmeniz için danışmanlık sunuyoruz." },
+          { title: "Uygun öğrenci yurdunun sağlanması", description: "Kampüsünüze yakın, bütçenize uygun, güvenli ve konforlu konaklama seçenekleri (öğrenci yurtları veya paylaşımlı daireler) sunuyoruz." },
+          { title: "En uygun uçak biletlerinin rezervasyonu", description: "Seyahat masraflarınızı azaltmak için öğrencilere özel en iyi uçak bileti fırsatlarını sağlıyoruz." },
+          { title: "Lüks transfer ve karşılama hizmetleri", description: "Varışınızda sizi havalimanında VIP araç filomuzla karşılıyor ve konaklayacağınız yere konfor ve güven içinde ulaştırıyoruz." },
+          { title: "Öğrenci oturma izni ve sağlık sigortası", description: "Öğrenci oturma izni dosyanızı hazırlamak, randevu almak ve zorunlu onaylı sağlık sigortasını sağlamak için tüm yasal işlemleri üstleniyoruz." },
+          { title: "Lise ve üniversite diplomalarının denkliği", description: "Türkiye Cumhuriyeti Yükseköğretim Kurulu nezdinde denklik işlemlerinin yürütülmesine ve gerekli belgelerin hazırlanmasına yardımcı oluyoruz." },
+          { title: "Banka hesabı açma", description: "Resmî bir Türk banka hesabı açmanız ve banka kartınızı almanız için adım adım yanınızdayız; böylece mali işlemleriniz kolaylaşır." },
+          { title: "SIM kart temini", description: "Varışınızda Türk telefon hattı satın almanıza, hattı kullanıma açmanıza ve öğrenci kullanımına uygun internet paketlerini seçmenize yardımcı oluyoruz." },
+          { title: "Öğrenci ulaşım kartının temini", description: "Şehir içinde ekonomik ve kolay ulaşım için öğrencilere özel indirimli ulaşım kartını (İndirimli Kart) çıkarıyoruz." },
+        ],
+      },
+      universities: {
+        heading: "Türkiye'nin köklü üniversitelerinden iş ortaklarımız",
+        intro: "CASANOSTRA olarak Türkiye'nin en köklü ve en güçlü üniversitelerinin yetkili temsilcisiyiz; bu iş birliği sayesinde size garantili kontenjan ve özel indirimler sunuyoruz:",
+        items: [
+          { name: "Haliç Üniversitesi", official: "" },
+          { name: "Üsküdar Üniversitesi", official: "" },
+          { name: "Fenerbahçe Üniversitesi", official: "" },
+          { name: "Beykent Üniversitesi", official: "" },
+          { name: "Kent Üniversitesi", official: "" },
+          { name: "Beykoz Üniversitesi", official: "" },
+        ],
+      },
+      promo: {
+        heading: "Türkiye'deki kapsamlı öğrenci hizmetleri paketinde özel indirim.",
+        description: "Kapsamlı öğrenci hizmetleri paketini (kabul, oturma izni, konaklama ve karşılama) talep ettiğinizde özel indirim kazanın.",
+      },
     },
   },
   fr: {
@@ -261,6 +361,44 @@ export const serviceDetailMessages: Record<NonArabicLocale, ServiceDetailCatalog
       included: ["Conseil pour définir le service souhaité", "Coordination complète avec les prestataires", "Réservation et confirmation du rendez-vous", "Suivi jusqu'à la fin du service", "Assistance 24h/24 et 7j/7"],
       excluded: ["Coût du service lui-même, déterminé selon la demande", "Achats personnels", "Pourboires"],
     },
+    "student-services": {
+      description: "Chez CASANOSTRA, nous croyons que le début de votre avenir académique mérite des débuts sereins, sans complications. C'est pourquoi nous avons conçu le pack complet « Services Étudiants » pour être votre conseiller de confiance et votre soutien juridique et logistique, depuis le moment où vous envisagez d'étudier en Turquie jusqu'à votre installation complète à l'université.",
+      features: [],
+      included: [],
+      excluded: [],
+      heroImageAlt: "Étudiants universitaires marchant ensemble devant un bâtiment du campus",
+      galleryImagesAlt: ["Un étudiant arrivant à l'aéroport avec sa valise", "Une chambre d'étudiant meublée et prête pour les études", "Des étudiants travaillant dans la bibliothèque universitaire"],
+      bundle: {
+        heading: "Notre pack complet de services étudiants",
+        items: [
+          { title: "Obtention des admissions universitaires", description: "Nous vous garantissons votre admission académique dans les meilleures universités privées de Turquie et vous conseillons pour choisir la filière la plus adaptée à votre avenir." },
+          { title: "Réservation d'un logement étudiant adapté", description: "Nous vous proposons des options de logement sûres et confortables — résidences étudiantes ou appartements partagés — proches de votre campus et adaptées à votre budget." },
+          { title: "Réservation des billets d'avion les moins chers", description: "Nous vous obtenons les meilleures offres de vols réservées aux étudiants afin de réduire vos frais de voyage." },
+          { title: "Services de transfert et d'accueil de luxe", description: "Nous vous accueillons à l'aéroport dès votre arrivée avec notre flotte de voitures VIP et vous conduisons à votre logement en tout confort et en toute sécurité." },
+          { title: "Permis de séjour étudiant et assurance santé", description: "Nous prenons en charge toutes les démarches légales pour préparer votre dossier de permis de séjour étudiant, prendre le rendez-vous et fournir l'assurance santé obligatoire agréée." },
+          { title: "Équivalence des diplômes du secondaire et de l'université", description: "Nous vous aidons à accomplir les démarches d'équivalence des diplômes (Denklik) et à préparer les documents requis auprès du Conseil turc de l'enseignement supérieur." },
+          { title: "Ouverture d'un compte bancaire", description: "Nous vous accompagnons pas à pas pour ouvrir un compte bancaire turc officiel et obtenir votre carte bancaire, afin de faciliter vos opérations financières." },
+          { title: "Obtention d'une carte SIM", description: "Nous vous aidons à acheter et activer une ligne téléphonique turque et à souscrire les forfaits internet adaptés à un usage étudiant dès votre arrivée." },
+          { title: "Obtention de la carte de transport étudiante", description: "Nous obtenons la carte de transport étudiante à tarif réduit (İndirimli Kart) pour des déplacements faciles et économiques en ville." },
+        ],
+      },
+      universities: {
+        heading: "Nos partenaires parmi les universités turques de longue tradition",
+        intro: "Chez CASANOSTRA, nous sommes agents agréés des universités les plus prestigieuses et les plus solides de Turquie ; grâce à ce partenariat, nous vous garantissons des places réservées et des réductions exclusives :",
+        items: [
+          { name: "Université Haliç", official: "Haliç Üniversitesi" },
+          { name: "Université Üsküdar", official: "Üsküdar Üniversitesi" },
+          { name: "Université Fenerbahçe", official: "Fenerbahçe Üniversitesi" },
+          { name: "Université Beykent", official: "Beykent Üniversitesi" },
+          { name: "Université Kent", official: "Kent Üniversitesi" },
+          { name: "Université Beykoz", official: "Beykoz Üniversitesi" },
+        ],
+      },
+      promo: {
+        heading: "Une réduction spéciale sur le pack complet des services étudiants en Turquie.",
+        description: "Bénéficiez d'une réduction exclusive lorsque vous demandez le pack complet des services étudiants (admission, permis de séjour, logement et accueil à l'aéroport).",
+      },
+    },
   },
   ru: {
     "reservations-turkey": {
@@ -333,6 +471,44 @@ export const serviceDetailMessages: Record<NonArabicLocale, ServiceDetailCatalog
       features: [{ title: "Широкий выбор", description: "Более 20 разных дополнительных услуг." }, { title: "Индивидуальная организация", description: "Услуга под ваши конкретные требования." }, { title: "Честные цены", description: "Выгодные тарифы без посредников." }, { title: "VIP-сервис", description: "Премиальный подход к каждой детали." }],
       included: ["Консультация для определения нужной услуги", "Полная координация с поставщиками услуг", "Бронирование и подтверждение времени", "Сопровождение до завершения услуги", "Поддержка 24/7"],
       excluded: ["Стоимость самой услуги, определяется индивидуально", "Личные покупки", "Чаевые"],
+    },
+    "student-services": {
+      description: "В CASANOSTRA мы уверены: начало вашего академического будущего заслуживает спокойного старта без сложностей. Поэтому мы создали комплексный пакет «Студенческие услуги», чтобы стать вашим надёжным консультантом и вашей юридической и логистической поддержкой с момента, когда вы задумались об учёбе в Турции, и до полного обустройства в университете.",
+      features: [],
+      included: [],
+      excluded: [],
+      heroImageAlt: "Студенты университета идут вместе перед зданием кампуса",
+      galleryImagesAlt: ["Студент приехал в аэропорт с чемоданом", "Обставленная студенческая комната, готовая для учёбы", "Студенты занимаются в университетской библиотеке"],
+      bundle: {
+        heading: "Наш комплексный пакет студенческих услуг",
+        items: [
+          { title: "Получение университетских зачислений", description: "Мы гарантируем ваше академическое зачисление в лучшие частные университеты Турции и консультируем по выбору специальности, наиболее подходящей для вашего будущего." },
+          { title: "Подбор подходящего студенческого жилья", description: "Мы предлагаем безопасные и комфортные варианты проживания — студенческие общежития или совместные квартиры — рядом с вашим кампусом и в рамках вашего бюджета." },
+          { title: "Бронирование самых дешёвых авиабилетов", description: "Мы подбираем лучшие предложения авиабилетов для студентов, чтобы сократить ваши расходы на поездку." },
+          { title: "Услуги трансфера и встречи премиум-класса", description: "Мы встречаем вас в аэропорту сразу по прибытии нашим VIP-автопарком и доставляем к месту проживания с полным комфортом и безопасностью." },
+          { title: "Студенческий вид на жительство и медицинская страховка", description: "Мы берём на себя все юридические процедуры: подготовку документов на студенческий вид на жительство, запись на приём и оформление обязательной одобренной медицинской страховки." },
+          { title: "Признание школьных и университетских дипломов", description: "Мы помогаем пройти процедуру признания дипломов (Denklik) и подготовить необходимые документы в Совете по высшему образованию Турции." },
+          { title: "Открытие банковского счёта", description: "Мы сопровождаем вас шаг за шагом в открытии официального турецкого банковского счёта и получении банковской карты, чтобы упростить ваши финансовые операции." },
+          { title: "Оформление SIM-карты", description: "Мы помогаем купить и активировать турецкую телефонную линию и подключить интернет-пакеты, подходящие для студенческого использования, сразу по приезде." },
+          { title: "Оформление студенческой транспортной карты", description: "Мы оформляем студенческую транспортную карту со скидкой (İndirimli Kart) для удобных и экономичных поездок по городу." },
+        ],
+      },
+      universities: {
+        heading: "Наши партнёры — университеты Турции с богатой историей",
+        intro: "CASANOSTRA является официальным представителем самых известных и сильных университетов Турции, и благодаря этому партнёрству мы предоставляем вам гарантированные места и эксклюзивные скидки:",
+        items: [
+          { name: "Университет Халич", official: "Haliç Üniversitesi" },
+          { name: "Университет Ускюдар", official: "Üsküdar Üniversitesi" },
+          { name: "Университет Фенербахче", official: "Fenerbahçe Üniversitesi" },
+          { name: "Университет Бейкент", official: "Beykent Üniversitesi" },
+          { name: "Университет Кент", official: "Kent Üniversitesi" },
+          { name: "Университет Бейкоз", official: "Beykoz Üniversitesi" },
+        ],
+      },
+      promo: {
+        heading: "Особая скидка на комплексный пакет студенческих услуг в Турции.",
+        description: "Получите эксклюзивную скидку при заказе комплексного пакета студенческих услуг (зачисление, вид на жительство, жильё и встреча в аэропорту).",
+      },
     },
   },
 };

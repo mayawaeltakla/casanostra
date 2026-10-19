@@ -4,13 +4,13 @@ import { offersList } from "@/lib/site-config";
 import { buildSimpleWhatsAppLink } from "@/lib/whatsapp";
 import { useTranslations } from "next-intl";
 
-/** خريطة ألوان الشارات حسب نوع العرض */
+/** خريطة ألوان الشارات حسب نوع العرض — ألوان ثابتة في الوضعين */
 const badgeColorClasses: Record<
   "gold" | "navy" | "red",
   { bg: string; text: string }
 > = {
-  gold: { bg: "bg-gold", text: "text-navy" },
-  navy: { bg: "bg-navy", text: "text-gold" },
+  gold: { bg: "bg-[#E7A523]", text: "text-[#1C2845]" },
+  navy: { bg: "bg-[#1C2845]", text: "text-white" },
   red: { bg: "bg-red-500", text: "text-white" },
 };
 

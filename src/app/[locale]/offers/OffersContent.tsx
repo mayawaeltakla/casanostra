@@ -1,6 +1,7 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
+import Image from "next/image";
 import {
   Sparkles,
   ChevronLeft,
@@ -84,6 +85,8 @@ export function OffersContent() {
               const relatedService = offer.relatedServiceSlug
                 ? servicesList.find((s) => s.slug === offer.relatedServiceSlug)
                 : null;
+              /* صورة البطاقة = صورة hero الخاصة بالخدمة المرتبطة (مع احتياط آمن) */
+              const image = relatedService?.heroImage ?? offer.image ?? offer.heroImage;
               const link = buildSimpleWhatsAppLink(
                 t("whatsappMessage", { title, target })
               );
@@ -91,28 +94,30 @@ export function OffersContent() {
               return (
                 <article
                   key={offer.id}
-                  className={`group relative bg-card rounded-3xl overflow-hidden border-2 transition-all duration-300 hover:-translate-y-2 ${
+                  className={`group relative flex flex-col bg-card rounded-3xl overflow-hidden border-2 transition-all duration-300 hover:-translate-y-2 ${
                     offer.featured
                       ? "border-gold shadow-luxury-lg"
                       : "border-border hover:border-gold/40 hover:shadow-luxury"
                   }`}
                 >
-                  {/* شارة */}
+                  {/* شارة — لونان ثابتان في الوضعين (ذهبي لعرض خاص / كحلي لعرض شهري) */}
                   <div className={`absolute top-4 right-0 z-10 px-4 py-1.5 text-xs font-bold rounded-l-lg shadow-md ${
-                    offer.badgeColor === "gold" ? "bg-gold text-navy" : "bg-navy text-gold"
+                    offer.badgeColor === "gold" ? "bg-[#E7A523] text-[#1C2845]" : "bg-[#1C2845] text-white"
                   }`}>
                     {t(`${offerKey}.badge`)}
                   </div>
 
-                  {/* صورة + نسبة الخصم */}
-                  <div
-                    className="relative h-44 flex items-end p-7"
-                    style={{
-                      background: offer.featured
-                        ? "linear-gradient(135deg, hsl(40 80% 52%) 0%, hsl(36 73% 45%) 100%)"
-                        : "linear-gradient(135deg, hsl(28 58% 33%) 0%, hsl(25 52% 28%) 100%)",
-                    }}
-                  >
+                  {/* صورة الخدمة + نسبة الخصم */}
+                  <div className="relative h-44 flex items-end p-7 overflow-hidden bg-muted">
+                    <Image
+                      src={image}
+                      alt={title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover"
+                    />
+                    {/* تعتيم لضمان وضوح نسبة الخصم */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/45 to-black/15" />
                     <div className="relative">
                       <div className="flex items-baseline gap-2">
                         <span className="text-7xl font-bold text-white drop-shadow-lg">
@@ -126,7 +131,7 @@ export function OffersContent() {
                   </div>
 
                   {/* المحتوى */}
-                  <div className="p-7">
+                  <div className="flex flex-1 flex-col p-7">
                     <div className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full mb-4 ${
                       offer.featured ? "bg-gold/10 text-gold" : "bg-muted text-muted-foreground"
                     }`}>
@@ -135,7 +140,7 @@ export function OffersContent() {
                     </div>
 
                     <h3 className="text-xl font-bold text-navy mb-3">{title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-5 min-h-[4rem]">
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-5 min-h-[4rem] flex-1">
                       {t(`${offerKey}.description`)}
                     </p>
 
@@ -149,11 +154,7 @@ export function OffersContent() {
                         href={link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`flex items-center justify-center gap-2 w-full px-5 py-3.5 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-95 ${
-                          offer.featured
-                            ? "bg-[#25D366] text-white hover:bg-[#1ebd5a] shadow-lg shadow-green-500/30"
-                            : "bg-navy text-white hover:bg-navy-700"
-                        }`}
+                        className="flex items-center justify-center gap-2 w-full px-5 py-3.5 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-95 bg-[#25D366] text-white hover:bg-[#1ebd5a] shadow-lg shadow-green-500/30"
                       >
                         <Phone className="w-4 h-4" />
                         <span>{t("requestOffer")}</span>

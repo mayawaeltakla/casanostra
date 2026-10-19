@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- *  CASANOSTRA — تعريف الخدمات الـ11 وحقول نماذجها
+ *  CASANOSTRA — تعريف الخدمات الـ12 وحقول نماذجها
  * ============================================================================
  *
  *  كل خدمة تحتوي:
@@ -120,7 +120,7 @@ export const groupToursList: string[] = [
 ];
 
 /* ====================================================================
- *  الخدمات الـ11 الكاملة
+ *  الخدمات الـ12 الكاملة
  * ==================================================================== */
 
 export const services: ServiceDef[] = [
@@ -459,6 +459,53 @@ export const services: ServiceDef[] = [
         type: "textarea",
         required: true,
         placeholder: "اكتب هنا تفاصيل الخدمة التي تبحث عنها... (مثال: حجز يخت خاص في بودروم لمدة يوم كامل مع 10 أشخاص)",
+      },
+    ],
+  },
+
+  /* ────────────────────────────────────────────────────────────────
+   * 12. الخدمات الطالبية المتكاملة في تركيا
+   * ──────────────────────────────────────────────────────────────── */
+  {
+    slug: "student-services",
+    title: "الخدمات الطالبية المتكاملة في تركيا",
+    description:
+      "نرافقك في رحلتك التعليمية خطوة بخطوة، من تحصيل القبول الجامعي وحتى الاستقرار التام في تركيا بملف طالبي قانوني ومتكامل.",
+    icon: "GraduationCap",
+    fields: [
+      {
+        name: "students",
+        label: "عدد الطلاب",
+        type: "people-counter",
+        required: true,
+        personFields: [
+          { name: "name", label: "الاسم الكامل", type: "text", required: true },
+          { name: "phone", label: "الهاتف (واتساب مع رمز الدولة)", type: "tel", required: true },
+          { name: "age", label: "العمر", type: "number", required: true },
+          { name: "nationality", label: "الجنسية", type: "text", required: true },
+        ],
+      },
+      {
+        name: "educationLevel",
+        label: "المستوى الدراسي الحالي",
+        type: "select",
+        required: true,
+        half: true,
+        options: ["الثانوية العامة", "البكالوريوس", "الماجستير", "الدكتوراه"],
+      },
+      {
+        name: "desiredMajor",
+        label: "التخصص المرغوب",
+        type: "text",
+        required: true,
+        half: true,
+      },
+      {
+        name: "preferredCity",
+        label: "المدينة المفضلة للدراسة",
+        type: "text",
+        required: false,
+        placeholder: "مثال: إسطنبول",
       },
     ],
   },

@@ -6,11 +6,11 @@ import { buildSimpleWhatsAppLink } from "@/lib/whatsapp";
 import { useTranslations } from "next-intl";
 
 /**
- * FeaturedOffers — العروض المميزة (6 بطاقات عمودية)
+ * FeaturedOffers — العروض المميزة (7 بطاقات عمودية)
  *
  * - عنوان القسم: "العروض المميزة" بخط ذهبي تحته
  * - شبكة: 3 أعمدة (ديسكتوب) / 2 (تابلت) / 1 (موبايل)
- * - 6 بطاقات عمودية (portrait) بنفس الحجم
+ * - 7 بطاقات عمودية (portrait) بنفس الحجم
  * - حدود خضراء رفيعة + صورة + عنوان + وصف + خصم + زر واتساب
  * - hover: ارتفاع + ظل
  * - دعم RTL + الوضع الليلي
@@ -80,6 +80,15 @@ const offers: Offer[] = [
       "/images/services/visa/hero.webp",
     waMessage: "",
   },
+  {
+    titleKey: "featuredOffer7Title",
+    descriptionKey: "featuredOffer7Description",
+    messageKey: "featuredOffer7Message",
+    discount: "15%",
+    image:
+      "/images/services/student-hero.jpg",
+    waMessage: "",
+  },
 ];
 
 export function FeaturedOffers() {
@@ -116,8 +125,8 @@ export function FeaturedOffers() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  {/* شارة الخصم */}
-                  <div className="absolute top-3 right-3 bg-gold text-navy font-bold text-sm px-3 py-1 rounded-lg shadow-md">
+                  {/* شارة الخصم — نص داكن ثابت ليبقى مقروءاً على الذهبي في الوضعين */}
+                  <div className="absolute top-3 right-3 bg-gold text-navy dark:text-[#1c2845] font-bold text-sm px-3 py-1 rounded-lg shadow-md">
                     {t("featuredDiscountLabel")} {offer.discount}
                   </div>
                 </div>

@@ -7,14 +7,12 @@ import { isFieldVisible } from "./services";
  *  CASANOSTRA — أدوات واتساب
  * ============================================================================
  *
- *  رقم الواتساب يُقرأ من متغيّر البيئة NEXT_PUBLIC_WHATSAPP_NUMBER.
- *  إذا لم يكن موجوداً، نرجع إلى القيمة في site-config.ts كافتراضي.
+ *  رقم الواتساب يُقرأ من site-config.ts (مصدر واحد لكل الموقع).
  *  الرقم يجب أن يحتوي رمز الدولة بدون + أو 00.
  * ============================================================================ */
 
-/** رقم واتساب الشركة — من env var أو fallback */
-const WHATSAPP_NUMBER =
-  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || siteConfig.whatsappNumber;
+/** رقم واتساب الشركة — مصدر واحد من site-config */
+const WHATSAPP_NUMBER = siteConfig.whatsappNumber;
 
 /** نوع بيانات الشخص الواحد داخل عدّاد الأشخاص */
 export interface PersonData {

@@ -17,6 +17,7 @@ import {
   HeartPulse,
   MoreHorizontal,
   Compass,
+  GraduationCap,
   Check,
   X,
   Clock,
@@ -47,10 +48,11 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   HeartPulse,
   MoreHorizontal,
   Compass,
+  GraduationCap,
 };
 
 /**
- * توليد جميع الصفحات الـ11 ثابتةً وقت البناء (Static Site Generation).
+ * توليد جميع الصفحات الـ12 ثابتةً وقت البناء (Static Site Generation).
  * نستخدم slugs من services.ts (مصدر الحقول الديناميكية) لضمان تطابق المسارات.
  */
 export function generateStaticParams() {
@@ -109,11 +111,13 @@ export async function generateMetadata({
  *
  * تركيب الصفحة:
  * 1. Hero section — صورة كبيرة + أيقونة + عنوان + مدة + سعر
- * 2. الوصف الكامل + مميزات الخدمة
- * 3. المشمولات + غير المشمولات (عمودان)
- * 4. معرض الصور
- * 5. نموذج الحجز (لزج على الشاشات الكبيرة)
- * 6. روابط التنقل بين الخدمات
+ * 2. الوصف الكامل
+ * 3. أقسام اختيارية إضافية إن عُرِّفت في الخدمة (باقة الخدمات + الشركاء)
+ * 4. مميزات الخدمة + المشمولات وغير المشمولات
+ * 5. معرض الصور
+ * 6. العرض الترويجي (إن عُرِّف)
+ * 7. نموذج الحجز (لزج على الشاشات الكبيرة)
+ * 8. روابط التنقل بين الخدمات
  */
 export default async function ServicePage({
   params,
@@ -157,6 +161,110 @@ export default async function ServicePage({
       <p className="text-navy-foreground/80 leading-relaxed">{marketing.subtitle}</p>
     </div>
   ) : null;
+
+  /* ------------------------------------------------------------------
+   * أقسام اختيارية إضافية (باقة الخدمات + الشركاء + العرض الترويجي).
+   * تُعرَّف بالعربية في site-config.ts وتُترجَم في i18n/service-details.ts.
+   * لا تُعرض إلا إذا عُرِّفت في الخدمة، لذلك لا يتغيّر شكل الخدمات الـ11.
+   * ------------------------------------------------------------------ */
+  const bundle = locale === "ar" ? service.bundle : serviceDetail?.bundle;
+  const universities = locale === "ar" ? service.universities : serviceDetail?.universities;
+  const promoText = locale === "ar" ? service.promo : serviceDetail?.promo;
+  /* نسبة الخصم مصدرها الوحيد service.promo.discount (مصدر مركزي واحد لكل اللغات) */
+  const promo =
+    service.promo && promoText
+      ? {
+          heading: promoText.heading,
+          description: promoText.description,
+          discount: service.promo.discount,
+        }
+      : undefined;
+  /* النصوص البديلة: المترجَمة إن وُجدت، وإلا اسم الخدمة */
+  const heroImageAlt =
+    (locale === "ar" ? service.heroImageAlt : serviceDetail?.heroImageAlt) || serviceTitle;
+  const galleryImagesAlt =
+    (locale === "ar" ? service.galleryImagesAlt : serviceDetail?.galleryImagesAlt) || [];
+
+  /* قسم باقة الخدمات — بطاقات مرقّمة بنفس نمط بطاقات المميزات */
+  const bundleBlock = bundle ? (
+    <div>
+      <h2 className="text-2xl lg:text-3xl font-bold text-navy mb-6 flex items-center gap-3">
+        <span className="w-1 h-8 bg-gold rounded-full" />
+        <span>{bundle.heading}</span>
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {bundle.items.map((item, idx) => (
+          <div
+            key={item.title}
+            className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border hover:border-gold/30 hover:shadow-luxury transition-all"
+          >
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gold/10 flex-shrink-0">
+              <span className="font-extrabold text-gold">{String(idx + 1).padStart(2, "0")}</span>
+            </div>
+            <div>
+              <h3 className="font-bold text-navy mb-1 leading-snug">{item.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  ) : null;
+
+  /* قسم شركاء الجامعات */
+  const universitiesBlock = universities ? (
+    <div>
+      <h2 className="text-2xl lg:text-3xl font-bold text-navy mb-5 flex items-center gap-3">
+        <span className="w-1 h-8 bg-gold rounded-full" />
+        <span>{universities.heading}</span>
+      </h2>
+      <p className="text-foreground/80 leading-relaxed mb-6">{universities.intro}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {universities.items.map((university) => (
+          <div
+            key={university.name}
+            className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border hover:border-gold/30 hover:shadow-luxury transition-all"
+          >
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gold/10 flex-shrink-0">
+              <GraduationCap className="w-5 h-5 text-gold" />
+            </div>
+            <div className="min-w-0">
+              <div className="font-bold text-navy leading-snug">{university.name}</div>
+              {/* الاسم الرسمي بالتركية — latin دائماً في الواجهة العربية */}
+              {university.official && university.official !== university.name && (
+                <div dir="ltr" className="text-xs text-muted-foreground text-start">
+                  {university.official}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  ) : null;
+
+  /* قسم العرض الترويجي — يبرز نسبة الخصم القادمة من site-config */
+  const promoBlock = promo ? (
+    <div className="rounded-2xl bg-navy border border-gold/30 p-6 lg:p-8 text-navy-foreground">
+      <div className="flex flex-col sm:flex-row items-center gap-6">
+        <div className="flex flex-col items-center justify-center w-28 h-28 rounded-full border-4 border-gold/40 bg-gold/10 flex-shrink-0">
+          <span className="text-3xl lg:text-4xl font-extrabold text-gold leading-none">
+            {promo.discount}
+          </span>
+          <span className="mt-2 text-xs font-medium text-navy-foreground/70">
+            {t("promoDiscountLabel")}
+          </span>
+        </div>
+        <div className="text-center sm:text-start">
+          <h2 className="text-xl lg:text-2xl font-bold text-gold mb-2 leading-snug">
+            {promo.heading}
+          </h2>
+          <p className="text-navy-foreground/80 leading-relaxed">{promo.description}</p>
+        </div>
+      </div>
+    </div>
+  ) : null;
+
   const currentIndex = servicesList.findIndex((s) => s.slug === slug);
   const prevService = servicesList[currentIndex - 1];
   const nextService = servicesList[currentIndex + 1];
@@ -196,7 +304,7 @@ export default async function ServicePage({
       <section className="relative flex min-h-[480px] items-end overflow-hidden sm:min-h-[520px] md:h-[min(70vw,72vh)] md:min-h-[520px] lg:h-[min(53vw,80vh)] lg:min-h-[560px] lg:max-h-[880px] xl:min-h-[640px]">
         <Image
           src={service.heroImage}
-          alt={serviceTitle}
+          alt={heroImageAlt}
           fill
           priority
           sizes="100vw"
@@ -290,77 +398,91 @@ export default async function ServicePage({
                 </p>
               </div>
 
-              {/* مميزات الخدمة */}
-              <div>
-                <h2 className="text-2xl lg:text-3xl font-bold text-navy mb-6 flex items-center gap-3">
-                  <span className="w-1 h-8 bg-gold rounded-full" />
-                  <span>{t("featuresTitle")}</span>
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  {serviceDetail.features.map((feature, idx) => {
-                    const FeatureIcon = idx % 4 === 0
-                      ? Check
-                      : idx % 4 === 1
-                        ? Tag
-                        : idx % 4 === 2
-                          ? Clock
-                          : Star;
-                    return (
-                      <div
-                        key={feature.title}
-                        className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border hover:border-gold/30 hover:shadow-luxury transition-all"
-                      >
-                        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gold/10 flex-shrink-0">
-                          <FeatureIcon className="w-5 h-5 text-gold" />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-navy mb-1">{feature.title}</h3>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {feature.description}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              {/* باقة الخدمات الشاملة — تظهر فقط إن عُرِّفت في الخدمة */}
+              {bundleBlock}
 
-              {/* المشمولات + غير المشمولات */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-card rounded-2xl p-6 border border-border">
-                  <h3 className="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                      <Check className="w-5 h-5 text-green-600" />
-                    </div>
-                    <span>{t("included")}</span>
-                  </h3>
-                  <ul className="space-y-3">
-                    {serviceDetail.included.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        <Check className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-foreground/80">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              {/* الجامعات الشريكة — تظهر فقط إن عُرِّفت في الخدمة */}
+              {universitiesBlock}
 
-                <div className="bg-card rounded-2xl p-6 border border-border">
-                  <h3 className="text-xl font-bold text-red-600 mb-4 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
-                      <X className="w-5 h-5 text-red-600" />
-                    </div>
-                    <span>{t("excluded")}</span>
-                  </h3>
-                  <ul className="space-y-3">
-                    {serviceDetail.excluded.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        <X className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
-                        <span className="text-foreground/80">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+              {/* مميزات الخدمة — تُعرض فقط للخدمات التي تعرّف مميزات */}
+              {serviceDetail.features.length > 0 && (
+                <div>
+                  <h2 className="text-2xl lg:text-3xl font-bold text-navy mb-6 flex items-center gap-3">
+                    <span className="w-1 h-8 bg-gold rounded-full" />
+                    <span>{t("featuresTitle")}</span>
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {serviceDetail.features.map((feature, idx) => {
+                      const FeatureIcon = idx % 4 === 0
+                        ? Check
+                        : idx % 4 === 1
+                          ? Tag
+                          : idx % 4 === 2
+                            ? Clock
+                            : Star;
+                      return (
+                        <div
+                          key={feature.title}
+                          className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border hover:border-gold/30 hover:shadow-luxury transition-all"
+                        >
+                          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gold/10 flex-shrink-0">
+                            <FeatureIcon className="w-5 h-5 text-gold" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-navy mb-1">{feature.title}</h3>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                              {feature.description}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* المشمولات + غير المشمولات — تُعرض فقط إن عُرِّفت في الخدمة */}
+              {(serviceDetail.included.length > 0 || serviceDetail.excluded.length > 0) && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {serviceDetail.included.length > 0 && (
+                    <div className="bg-card rounded-2xl p-6 border border-border">
+                      <h3 className="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                          <Check className="w-5 h-5 text-green-600" />
+                        </div>
+                        <span>{t("included")}</span>
+                      </h3>
+                      <ul className="space-y-3">
+                        {serviceDetail.included.map((item, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm">
+                            <Check className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground/80">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {serviceDetail.excluded.length > 0 && (
+                    <div className="bg-card rounded-2xl p-6 border border-border">
+                      <h3 className="text-xl font-bold text-red-600 mb-4 flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                          <X className="w-5 h-5 text-red-600" />
+                        </div>
+                        <span>{t("excluded")}</span>
+                      </h3>
+                      <ul className="space-y-3">
+                        {serviceDetail.excluded.map((item, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm">
+                            <X className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                            <span className="text-foreground/80">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
               {/* معرض الصور */}
               <div>
                 <h2 className="text-2xl lg:text-3xl font-bold text-navy mb-6 flex items-center gap-3">
@@ -375,15 +497,21 @@ export default async function ServicePage({
                     >
                       <Image
                         src={img}
-                        alt={`${serviceTitle} — ${i + 1}`}
+                        alt={galleryImagesAlt[i] || `${serviceTitle} — ${i + 1}`}
                         fill
                         sizes="(max-width: 640px) 100vw, 33vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        style={{
+                          objectPosition: service.galleryImagesPosition?.[i] || "center",
+                        }}
                       />
                     </div>
                   ))}
                 </div>
               </div>
+
+              {/* العرض الترويجي — يظهر فقط إن عُرِّف في الخدمة */}
+              {promoBlock}
 
               {marketing?.position === "bottom" && marketingBlock}
             </div>
