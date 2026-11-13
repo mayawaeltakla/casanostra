@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import {
   ChevronLeft,
@@ -11,16 +11,18 @@ import {
   User,
   MessageSquare,
   CheckCircle2,
+  AlertCircle,
   Loader2,
 } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
 import { buildSimpleWhatsAppLink } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
+import { submitContact } from "@/lib/submit-contact";
 import { useLocale } from "next-intl";
 import { lt } from "@/lib/locale-text";
 
 /* ============================================================================
- *  مركز المساعدة — مكان لكتابة الاسم وإرسال المشكلة عبر الإيميل مع رقم الهاتف
+ *  مركز المساعدة — نموذج يُرسل الاسم والهاتف والمشكلة إلى فريقنا عبر /api/contact (Resend)
  * ============================================================================ */
 
 interface FormData {
@@ -33,44 +35,44 @@ const initialData: FormData = { name: "", phone: "", message: "" };
 
 const messages = {
   ar: {
-    home: "الرئيسية", title: "مركز المساعدة", intro: "هل واجهت مشكلة أو لديك استفسار؟ أرسل لنا رسالتك عبر النموذج التالي وسيتم تحويلك إلى بريدك الإلكتروني لإرسالها مباشرةً.",
-    sendMessage: "أرسل لنا رسالتك", formTitle: "نموذج المساعدة", formDescription: "املأ النموذج بالاسم ورقم الهاتف والمشكلة، وسيتم فتح برنامج البريد الإلكتروني لديك برسالة جاهزة إلى فريقنا.",
-    emailOpened: "تم فتح برنامج البريد الإلكتروني", emailOpenedDescription: "أكمل إرسال الرسالة من برنامج البريد لديك.", name: "الاسم", namePlaceholder: "اكتب اسمك الكامل", phone: "رقم الهاتف", issue: "المشكلة / الاستفسار", issuePlaceholder: "اكتب وصفاً مفصلاً لمشكلتك أو استفسارك...",
-    nameRequired: "الاسم مطلوب", issueRequired: "وصف المشكلة مطلوب", opening: "جاري الفتح...", sendEmail: "إرسال عبر البريد الإلكتروني", emailHint: "سيتم فتح برنامج البريد لديك برسالة جاهزة إلى",
-    directContact: "أو تواصل معنا مباشرةً", chooseContact: "اختر الطريقة الأنسب لك من بين الخيارات التالية.", whatsapp: "واتساب مباشر", fastest: "تواصل عبر واتساب", email: "البريد الإلكتروني", workingHours: "أوقات العمل", emergency: "للاستفسار عن الخدمة", friday: "الجمعة: مغلق",
-    emailSubject: "طلب مساعدة من {name}", greeting: "مرحباً فريق CASANOSTRA،", emailName: "الاسم", emailPhone: "رقم الهاتف", notProvided: "غير محدد", emailIssue: "المشكلة / الاستفسار", closing: "أرجو التواصل معي في أقرب وقت ممكن. شكراً لكم.", whatsappMessage: "مرحباً CASANOSTRA، أحتاج مساعدة من فريق الدعم.",
+    home: "الرئيسية", title: "مركز المساعدة", intro: "هل واجهت مشكلة أو لديك استفسار؟ أرسل لنا رسالتك عبر النموذج التالي وستصل مباشرةً إلى فريقنا.",
+    sendMessage: "أرسل لنا رسالتك", formTitle: "نموذج المساعدة", formDescription: "املأ النموذج بالاسم ورقم الهاتف والمشكلة، وسنرسلها مباشرةً إلى فريقنا ونتواصل معك.",
+    emailOpened: "تم إرسال رسالتك بنجاح!", emailOpenedDescription: "شكراً لك، سيتواصل معك فريقنا في أقرب وقت.", name: "الاسم", namePlaceholder: "اكتب اسمك الكامل", phone: "رقم الهاتف", issue: "المشكلة / الاستفسار", issuePlaceholder: "اكتب وصفاً مفصلاً لمشكلتك أو استفسارك...",
+    nameRequired: "الاسم مطلوب", issueRequired: "وصف المشكلة مطلوب", opening: "جاري الإرسال...", sendEmail: "إرسال الرسالة", emailHint: "ستصل رسالتك مباشرةً إلى فريقنا ولن يُفتح برنامج البريد لديك.",
+    directContact: "أو تواصل معنا مباشرةً", chooseContact: "اختر الطريقة الأنسب لك من بين الخيارات التالية.", whatsapp: "واتساب مباشر", fastest: "تواصل عبر واتساب", email: "البريد الإلكتروني", workingHours: "أوقات العمل", emergency: "للاستفسار عن الخدمة", friday: "الجمعة: مغلق",  errorTitle: "تعذّر إرسال رسالتك", errorDescription: "حدث خطأ أثناء الإرسال. حاول مرة أخرى بعد قليل أو تواصل معنا عبر واتساب.", rateLimited: "أرسلت عدة رسائل خلال وقت قصير. يرجى المحاولة لاحقاً.", phoneInvalid: "رقم الهاتف غير صحيح", issueShort: "وصف المشكلة قصير جداً",
+    whatsappMessage: "مرحباً CASANOSTRA، أحتاج مساعدة من فريق الدعم.",
   },
   en: {
-    home: "Home", title: "Help Center", intro: "Need help or have a question? Send us a message using the form and your email app will open with it ready to send.",
-    sendMessage: "Send us a message", formTitle: "Help Request", formDescription: "Enter your name, phone number, and issue. Your email app will open with a prepared message for our team.",
-    emailOpened: "Your email app is open", emailOpenedDescription: "Send the prepared message from your email app.", name: "Name", namePlaceholder: "Enter your full name", phone: "Phone number", issue: "Issue / question", issuePlaceholder: "Describe your issue or question...",
-    nameRequired: "Name is required", issueRequired: "Please describe the issue", opening: "Opening email...", sendEmail: "Send by email", emailHint: "Your email app will open with a message addressed to",
-    directContact: "Or contact us directly", chooseContact: "Choose the contact method that works best for you.", whatsapp: "WhatsApp", fastest: "Contact us via WhatsApp", email: "Email", workingHours: "Working hours", emergency: "Ask us about the service", friday: "Friday: Closed",
-    emailSubject: "Help request from {name}", greeting: "Hello CASANOSTRA team,", emailName: "Name", emailPhone: "Phone", notProvided: "Not provided", emailIssue: "Issue / question", closing: "Please contact me as soon as possible. Thank you.", whatsappMessage: "Hello CASANOSTRA, I need help from the support team.",
+    home: "Home", title: "Help Center", intro: "Need help or have a question? Send us a message using the form and it will reach our team directly.",
+    sendMessage: "Send us a message", formTitle: "Help Request", formDescription: "Enter your name, phone number, and issue. We will send it straight to our team and get back to you.",
+    emailOpened: "Your message was sent successfully!", emailOpenedDescription: "Thank you. Our team will get back to you as soon as possible.", name: "Name", namePlaceholder: "Enter your full name", phone: "Phone number", issue: "Issue / question", issuePlaceholder: "Describe your issue or question...",
+    nameRequired: "Name is required", issueRequired: "Please describe the issue", opening: "Sending...", sendEmail: "Send message", emailHint: "Your message is delivered directly to our team; your email app will not open.",
+    directContact: "Or contact us directly", chooseContact: "Choose the contact method that works best for you.", whatsapp: "WhatsApp", fastest: "Contact us via WhatsApp", email: "Email", workingHours: "Working hours", emergency: "Ask us about the service", friday: "Friday: Closed",  errorTitle: "We could not send your message", errorDescription: "Something went wrong while sending. Please try again shortly or contact us on WhatsApp.", rateLimited: "You have sent several messages in a short time. Please try again later.", phoneInvalid: "Phone number is not valid", issueShort: "Please describe the issue in more detail",
+    whatsappMessage: "Hello CASANOSTRA, I need help from the support team.",
   },
   tr: {
-    home: "Ana Sayfa", title: "Yardım Merkezi", intro: "Bir sorun mu yaşıyorsunuz veya sorunuz mu var? Formu gönderin; e-posta uygulamanız gönderilmeye hazır mesajla açılır.",
-    sendMessage: "Bize mesaj gönderin", formTitle: "Yardım Talebi", formDescription: "Adınızı, telefon numaranızı ve sorununuzu yazın. Ekibimize gönderilmeye hazır bir e-posta açılır.",
-    emailOpened: "E-posta uygulamanız açıldı", emailOpenedDescription: "Hazırlanan mesajı e-posta uygulamanızdan gönderin.", name: "Ad", namePlaceholder: "Adınızı ve soyadınızı yazın", phone: "Telefon numarası", issue: "Sorun / soru", issuePlaceholder: "Sorununuzu veya sorunuzu açıklayın...",
-    nameRequired: "Ad gereklidir", issueRequired: "Lütfen sorunu açıklayın", opening: "E-posta açılıyor...", sendEmail: "E-posta ile gönder", emailHint: "E-posta uygulamanız şu alıcıya hazır mesajla açılır:",
-    directContact: "Bize doğrudan ulaşın", chooseContact: "Size en uygun iletişim yöntemini seçin.", whatsapp: "WhatsApp", fastest: "WhatsApp üzerinden bize ulaşın", email: "E-posta", workingHours: "Çalışma saatleri", emergency: "Hizmet hakkında bilgi alın", friday: "Cuma: Kapalı",
-    emailSubject: "{name} için yardım talebi", greeting: "Merhaba CASANOSTRA ekibi,", emailName: "Ad", emailPhone: "Telefon", notProvided: "Belirtilmedi", emailIssue: "Sorun / soru", closing: "Lütfen en kısa sürede benimle iletişime geçin. Teşekkürler.", whatsappMessage: "Merhaba CASANOSTRA, destek ekibinden yardım almak istiyorum.",
+    home: "Ana Sayfa", title: "Yardım Merkezi", intro: "Bir sorun mu yaşıyorsunuz veya sorunuz mu var? Formu gönderin; mesajınız doğrudan ekibimize ulaşır.",
+    sendMessage: "Bize mesaj gönderin", formTitle: "Yardım Talebi", formDescription: "Adınızı, telefon numaranızı ve sorununuzu yazın. Doğrudan ekibimize iletip size dönüş yapacağız.",
+    emailOpened: "Mesajınız başarıyla gönderildi!", emailOpenedDescription: "Teşekkürler. Ekibimiz en kısa sürede sizinle iletişime geçecek.", name: "Ad", namePlaceholder: "Adınızı ve soyadınızı yazın", phone: "Telefon numarası", issue: "Sorun / soru", issuePlaceholder: "Sorununuzu veya sorunuzu açıklayın...",
+    nameRequired: "Ad gereklidir", issueRequired: "Lütfen sorunu açıklayın", opening: "Gönderiliyor...", sendEmail: "Mesajı gönder", emailHint: "Mesajınız doğrudan ekibimize iletilir; e-posta uygulamanız açılmaz.",
+    directContact: "Bize doğrudan ulaşın", chooseContact: "Size en uygun iletişim yöntemini seçin.", whatsapp: "WhatsApp", fastest: "WhatsApp üzerinden bize ulaşın", email: "E-posta", workingHours: "Çalışma saatleri", emergency: "Hizmet hakkında bilgi alın", friday: "Cuma: Kapalı",  errorTitle: "Mesajınız gönderilemedi", errorDescription: "Gönderim sırasında bir sorun oluştu. Lütfen kısa süre sonra tekrar deneyin veya WhatsApp'tan bize ulaşın.", rateLimited: "Kısa sürede çok sayıda mesaj gönderdiniz. Lütfen daha sonra tekrar deneyin.", phoneInvalid: "Telefon numarası geçersiz", issueShort: "Lütfen sorunu biraz daha ayrıntılı açıklayın",
+    whatsappMessage: "Merhaba CASANOSTRA, destek ekibinden yardım almak istiyorum.",
   },
   fr: {
-    home: "Accueil", title: "Centre d'aide", intro: "Un problème ou une question ? Envoyez-nous un message via le formulaire ; votre messagerie s'ouvrira avec le message prêt à envoyer.",
-    sendMessage: "Envoyez-nous un message", formTitle: "Demande d'aide", formDescription: "Indiquez votre nom, votre téléphone et votre problème. Votre messagerie s'ouvrira avec un message prêt pour notre équipe.",
-    emailOpened: "Votre messagerie est ouverte", emailOpenedDescription: "Envoyez le message préparé depuis votre messagerie.", name: "Nom", namePlaceholder: "Saisissez votre nom complet", phone: "Numéro de téléphone", issue: "Problème / question", issuePlaceholder: "Décrivez votre problème ou votre question...",
-    nameRequired: "Le nom est obligatoire", issueRequired: "Veuillez décrire le problème", opening: "Ouverture de la messagerie...", sendEmail: "Envoyer par e-mail", emailHint: "Votre messagerie s'ouvrira avec un message destiné à",
-    directContact: "Ou contactez-nous directement", chooseContact: "Choisissez le moyen de contact qui vous convient.", whatsapp: "WhatsApp", fastest: "Contactez-nous via WhatsApp", email: "E-mail", workingHours: "Horaires", emergency: "Demandez des informations sur le service", friday: "Vendredi : fermé",
-    emailSubject: "Demande d'aide de {name}", greeting: "Bonjour l'équipe CASANOSTRA,", emailName: "Nom", emailPhone: "Téléphone", notProvided: "Non renseigné", emailIssue: "Problème / question", closing: "Merci de me contacter dès que possible. Merci.", whatsappMessage: "Bonjour CASANOSTRA, j'ai besoin de l'aide de l'équipe d'assistance.",
+    home: "Accueil", title: "Centre d'aide", intro: "Un problème ou une question ? Envoyez-nous un message via le formulaire ; il parviendra directement à notre équipe.",
+    sendMessage: "Envoyez-nous un message", formTitle: "Demande d'aide", formDescription: "Indiquez votre nom, votre téléphone et votre problème. Nous le transmettrons directement à notre équipe et reviendrons vers vous.",
+    emailOpened: "Votre message a bien été envoyé !", emailOpenedDescription: "Merci. Notre équipe vous répondra dans les meilleurs délais.", name: "Nom", namePlaceholder: "Saisissez votre nom complet", phone: "Numéro de téléphone", issue: "Problème / question", issuePlaceholder: "Décrivez votre problème ou votre question...",
+    nameRequired: "Le nom est obligatoire", issueRequired: "Veuillez décrire le problème", opening: "Envoi en cours...", sendEmail: "Envoyer le message", emailHint: "Votre message est transmis directement à notre équipe ; votre messagerie ne s'ouvrira pas.",
+    directContact: "Ou contactez-nous directement", chooseContact: "Choisissez le moyen de contact qui vous convient.", whatsapp: "WhatsApp", fastest: "Contactez-nous via WhatsApp", email: "E-mail", workingHours: "Horaires", emergency: "Demandez des informations sur le service", friday: "Vendredi : fermé",  errorTitle: "Impossible d'envoyer votre message", errorDescription: "Une erreur s'est produite lors de l'envoi. Veuillez réessayer dans un instant ou nous contacter sur WhatsApp.", rateLimited: "Vous avez envoyé plusieurs messages en peu de temps. Veuillez réessayer plus tard.", phoneInvalid: "Numéro de téléphone invalide", issueShort: "Veuillez décrire le problème plus en détail",
+    whatsappMessage: "Bonjour CASANOSTRA, j'ai besoin de l'aide de l'équipe d'assistance.",
   },
   ru: {
-    home: "Главная", title: "Центр помощи", intro: "Столкнулись с проблемой или есть вопрос? Отправьте сообщение через форму, и почтовое приложение откроется с готовым письмом.",
-    sendMessage: "Напишите нам", formTitle: "Запрос помощи", formDescription: "Укажите имя, телефон и опишите проблему. Почтовое приложение откроется с письмом для нашей команды.",
-    emailOpened: "Почтовое приложение открыто", emailOpenedDescription: "Отправьте подготовленное письмо из почтового приложения.", name: "Имя", namePlaceholder: "Введите полное имя", phone: "Номер телефона", issue: "Проблема / вопрос", issuePlaceholder: "Опишите проблему или задайте вопрос...",
-    nameRequired: "Укажите имя", issueRequired: "Опишите проблему", opening: "Открываем почту...", sendEmail: "Отправить по почте", emailHint: "Почтовое приложение откроется с письмом для адреса",
-    directContact: "Или свяжитесь с нами напрямую", chooseContact: "Выберите удобный способ связи.", whatsapp: "WhatsApp", fastest: "Свяжитесь с нами через WhatsApp", email: "Электронная почта", workingHours: "Часы работы", emergency: "Уточните информацию об услуге", friday: "Пятница: закрыто",
-    emailSubject: "Запрос помощи от {name}", greeting: "Здравствуйте, команда CASANOSTRA!", emailName: "Имя", emailPhone: "Телефон", notProvided: "Не указано", emailIssue: "Проблема / вопрос", closing: "Пожалуйста, свяжитесь со мной как можно скорее. Спасибо.", whatsappMessage: "Здравствуйте, CASANOSTRA! Мне нужна помощь службы поддержки.",
+    home: "Главная", title: "Центр помощи", intro: "Столкнулись с проблемой или есть вопрос? Отправьте сообщение через форму — оно поступит напрямую нашей команде.",
+    sendMessage: "Напишите нам", formTitle: "Запрос помощи", formDescription: "Укажите имя, телефон и опишите проблему. Мы передадим её напрямую команде и свяжемся с вами.",
+    emailOpened: "Ваше сообщение успешно отправлено!", emailOpenedDescription: "Спасибо. Наша команда свяжется с вами как можно скорее.", name: "Имя", namePlaceholder: "Введите полное имя", phone: "Номер телефона", issue: "Проблема / вопрос", issuePlaceholder: "Опишите проблему или задайте вопрос...",
+    nameRequired: "Укажите имя", issueRequired: "Опишите проблему", opening: "Отправка...", sendEmail: "Отправить сообщение", emailHint: "Сообщение доставляется напрямую нашей команде; почтовое приложение не откроется.",
+    directContact: "Или свяжитесь с нами напрямую", chooseContact: "Выберите удобный способ связи.", whatsapp: "WhatsApp", fastest: "Свяжитесь с нами через WhatsApp", email: "Электронная почта", workingHours: "Часы работы", emergency: "Уточните информацию об услуге", friday: "Пятница: закрыто",  errorTitle: "Не удалось отправить сообщение", errorDescription: "При отправке произошла ошибка. Повторите попытку чуть позже или свяжитесь с нами в WhatsApp.", rateLimited: "Вы отправили несколько сообщений за короткое время. Попробуйте позже.", phoneInvalid: "Неверный номер телефона", issueShort: "Опишите проблему подробнее",
+    whatsappMessage: "Здравствуйте, CASANOSTRA! Мне нужна помощь службы поддержки.",
   },
 } as const;
 
@@ -80,7 +82,10 @@ export function HelpContent() {
   const copy = messages[locale as keyof typeof messages] ?? messages.en;
   const [formData, setFormData] = useState<FormData>(initialData);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
-  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [rateLimited, setRateLimited] = useState(false);
+  const [website, setWebsite] = useState(""); // honeypot
+  const startedAt = useRef(Date.now());
 
   const updateField = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -90,7 +95,11 @@ export function HelpContent() {
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
     if (!formData.name.trim()) newErrors.name = copy.nameRequired;
+    if (formData.phone.trim() && !/^[0-9+()\-.\s]{1,30}$/.test(formData.phone.trim())) {
+      newErrors.phone = copy.phoneInvalid;
+    }
     if (!formData.message.trim()) newErrors.message = copy.issueRequired;
+    else if (formData.message.trim().length < 5) newErrors.message = copy.issueShort;
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -100,27 +109,26 @@ export function HelpContent() {
     if (!validate()) return;
 
     setStatus("sending");
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    const result = await submitContact({
+      kind: "help",
+      name: formData.name.trim(),
+      phone: formData.phone.trim(),
+      message: formData.message.trim(),
+      locale,
+      website,
+      startedAt: startedAt.current,
+    });
 
-    const subject = copy.emailSubject.replace("{name}", formData.name);
-    const body = `${copy.greeting}
-
-  ${copy.emailName}: ${formData.name}
-  ${copy.emailPhone}: ${formData.phone || copy.notProvided}
-
-  ${copy.emailIssue}:
-${formData.message}
-
-  ${copy.closing}`;
-
-    const mailtoLink = `mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoLink;
-
-    setStatus("sent");
-    setTimeout(() => {
-      setStatus("idle");
+    // النجاح يُعرض فقط بعد تأكيد الخادم أن الرسالة أُرسلت فعلاً.
+    if (result.ok) {
+      setStatus("sent");
       setFormData(initialData);
-    }, 5000);
+      setWebsite("");
+      startedAt.current = Date.now();
+    } else {
+      setRateLimited(result.reason === "rate_limited");
+      setStatus("error");
+    }
   };
 
   return (
@@ -183,7 +191,33 @@ ${formData.message}
                 </div>
               )}
 
+              {status === "error" && (
+                <div role="alert" className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <div className="font-bold text-red-800 text-sm">{copy.errorTitle}</div>
+                    <div className="text-xs text-red-700 mt-1">
+                      {rateLimited ? copy.rateLimited : copy.errorDescription}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Honeypot: مخفي عن البشر — الروبوتات فقط تملؤه */}
+                <div aria-hidden="true" className="absolute h-0 w-0 overflow-hidden opacity-0 pointer-events-none">
+                  <label htmlFor={`${formId}-website`}>Website</label>
+                  <input
+                    id={`${formId}-website`}
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                  />
+                </div>
+
                 {/* الاسم */}
                 <div>
                   <label htmlFor={`${formId}-name`} className="flex items-center gap-1.5 text-sm font-medium text-navy mb-1.5">
@@ -226,13 +260,20 @@ ${formData.message}
                     dir="ltr"
                     value={formData.phone}
                     onChange={(e) => updateField("phone", e.target.value)}
+                    aria-invalid={errors.phone ? true : undefined}
+                    aria-describedby={errors.phone ? `${formId}-phone-error` : undefined}
                     className={cn(
                       "w-full px-4 py-2.5 rounded-lg border bg-background text-foreground",
                       "focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-colors",
                       "placeholder:text-muted-foreground/60 text-left",
-                      "border-border",
+                      errors.phone ? "border-red-300 bg-red-50/30" : "border-border",
                     )}
                   />
+                  {errors.phone && (
+                    <p id={`${formId}-phone-error`} role="alert" className="mt-1 text-xs text-red-500 flex items-center gap-1">
+                      <span>⚠</span><span>{errors.phone}</span>
+                    </p>
+                  )}
                 </div>
 
                 {/* المشكلة */}
@@ -285,8 +326,7 @@ ${formData.message}
                 </button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  {copy.emailHint}{" "}
-                  <span dir="ltr" className="font-medium text-gold-readable">{siteConfig.contact.email}</span>
+                  {copy.emailHint}
                 </p>
               </form>
             </div>
