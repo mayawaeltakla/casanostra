@@ -7,6 +7,7 @@
     "build": "node scripts/preview-migrate.mjs && next build",
     "start": "node scripts/start-standalone.mjs",
     "lint": "eslint .",
+    "test:rate-limit": "node --experimental-strip-types --import ./scripts/test-loader.mjs --test src/lib/rate-limit.test.ts",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",

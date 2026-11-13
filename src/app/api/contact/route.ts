@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
-import { getClientIp, rateLimit } from "@/lib/rate-limit";
+import { createHash } from "node:crypto";
+import { getClientIp } from "@/lib/rate-limit";
+import { rateLimitShared } from "@/lib/rate-limit-shared";
 import { sendContactEmail, validateContactInput } from "@/lib/contact-mail";
 
 export const runtime = "nodejs";
@@ -35,9 +37,9 @@ export async function POST(request: Request) {
 
   // حد المعدل لكل IP: 5 رسائل / 10 دقائق، و20 / يوم
   const ip = getClientIp(request);
-  const short = rateLimit(`contact:${ip}`, 5, 10 * 60 * 1000);
+  const short = await rateLimitShared(`contact:${ip}`, 5, 10 * 60 * 1000);
   if (!short.ok) return fail("rate_limited", 429, { retryAfter: short.retryAfterSeconds }, { "Retry-After": String(short.retryAfterSeconds) });
-  const daily = rateLimit(`contact-day:${ip}`, 20, 24 * 60 * 60 * 1000);
+  const daily = await rateLimitShared(`contact-day:${ip}`, 20, 24 * 60 * 60 * 1000);
   if (!daily.ok) return fail("rate_limited", 429, { retryAfter: daily.retryAfterSeconds }, { "Retry-After": String(daily.retryAfterSeconds) });
 
   let raw: unknown;
@@ -67,7 +69,9 @@ export async function POST(request: Request) {
 
   // حد إضافي لكل بريد مرسِل (يمنع إغراق صندوق شخص واحد/استهداف نفس العنوان)
   if (result.data.email) {
-    const perEmail = rateLimit(`contact-email:${result.data.email.toLowerCase()}`, 3, 60 * 60 * 1000);
+    // نخزّن بصمة البريد لا البريد نفسه في المخزن المشترك.
+    const emailKey = createHash("sha256").update(result.data.email.toLowerCase()).digest("hex").slice(0, 32);
+    const perEmail = await rateLimitShared(`contact-email:${emailKey}`, 3, 60 * 60 * 1000);
     if (!perEmail.ok) return fail("rate_limited", 429, { retryAfter: perEmail.retryAfterSeconds }, { "Retry-After": String(perEmail.retryAfterSeconds) });
   }
 
