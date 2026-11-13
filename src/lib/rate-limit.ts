@@ -5,8 +5,9 @@
  * تصميم بسيط لخادم واحد (يناسب هذا النشر): خريطة IP → أوقات المحاولات.
  * يتجاوز الحد → تُعاد المحاولات المتبقية والوقت حتى إعادة التعيين.
  *
- * ليس بديلاً عن حل موزّع (Redis) لنشر متعدد الخوادم — لكنه كافٍ تماماً
- * لصد هجمات القاموس البطيئة الشائعة.
+ * ليس بديلاً عن حل موزّع (Redis) لنشر متعدد النسخ (مثل Vercel، حيث لكل
+ * نسخة serverless ذاكرتها الخاصة). نماذج التواصل تستعمل `rate-limit-shared.ts`
+ * (Upstash/Vercel KV)؛ أما تسجيل دخول الإدارة فيبقى على هذا الملف دون تغيير.
  */
 
 interface RateLimitResult {
@@ -18,23 +19,31 @@ interface RateLimitResult {
   retryAfterSeconds: number;
 }
 
-const buckets = new Map<string, number[]>();
-
-/** تنظيف دوري للسلال القديمة — يمنع تسرّب الذاكرة مع مرور الوقت. */
-function pruneBucket(key: string, windowMs: number, now: number) {
-  const times = buckets.get(key);
-  if (!times) return;
-  const fresh = times.filter((t) => now - t < windowMs);
-  if (fresh.length === 0) buckets.delete(key);
-  else buckets.set(key, fresh);
+interface Bucket {
+  times: number[];
+  /** نافذة هذا المفتاح نفسه — كل مفتاح يُنظَّف بنافذته هو لا بنافذة آخر طلب. */
+  windowMs: number;
 }
 
-/** تنظيف شامل خفيف (كل ~دقيقة عند الاستخدام المكثف) — يمنع نمو الخريطة للأبد. */
+const buckets = new Map<string, Bucket>();
+
+/** تنظيف سلة واحدة بنافذتها الخاصة. */
+function pruneBucket(key: string, now: number) {
+  const bucket = buckets.get(key);
+  if (!bucket) return;
+  const fresh = bucket.times.filter((t) => now - t < bucket.windowMs);
+  if (fresh.length === 0) buckets.delete(key);
+  else buckets.set(key, { times: fresh, windowMs: bucket.windowMs });
+}
+
+/** تنظيف شامل خفيف (كل ~دقيقة) — يمنع نمو الخريطة للأبد.
+ * لكل سلة نافذتها المخزَّنة، فلا يحذف تنظيفٌ مرّ عبر حدّ 10 دقائق
+ * سجلات حدّ الساعة أو اليوم. */
 let lastSweep = 0;
-function sweep(windowMs: number, now: number) {
+function sweep(now: number) {
   if (now - lastSweep < 60_000) return;
   lastSweep = now;
-  for (const key of buckets.keys()) pruneBucket(key, windowMs, now);
+  for (const key of [...buckets.keys()]) pruneBucket(key, now);
 }
 
 export function rateLimit(
@@ -45,10 +54,13 @@ export function rateLimit(
   windowMs = 15 * 60 * 1000,
 ): RateLimitResult {
   const now = Date.now();
-  sweep(windowMs, now);
-  pruneBucket(key, windowMs, now);
+  sweep(now);
+  // نسجّل نافذة هذا المفتاح قبل التقليم حتى يُقلَّم بنافذته الصحيحة.
+  const existing = buckets.get(key);
+  if (existing) existing.windowMs = windowMs;
+  pruneBucket(key, now);
 
-  const times = buckets.get(key) ?? [];
+  const times = buckets.get(key)?.times ?? [];
   if (times.length >= limit) {
     const oldest = Math.min(...times);
     return {
@@ -58,7 +70,7 @@ export function rateLimit(
     };
   }
 
-  buckets.set(key, [...times, now]);
+  buckets.set(key, { times: [...times, now], windowMs });
   return { ok: true, remaining: limit - times.length - 1, retryAfterSeconds: 0 };
 }
 
@@ -80,4 +92,9 @@ export function getClientIp(request: Request): string {
  * حتى لا تُحتسب المحاولات الناجحة ضمن الحد. */
 export function resetRateLimit(key: string) {
   buckets.delete(key);
+}
+
+/** لاختبارات الوحدة فقط. */
+export function __clearRateLimitForTests() {
+  buckets.clear();
 }

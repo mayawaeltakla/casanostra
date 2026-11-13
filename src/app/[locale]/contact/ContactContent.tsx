@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import {
   ChevronLeft,
@@ -12,12 +12,14 @@ import {
   User,
   MessageSquare,
   CheckCircle2,
+  AlertCircle,
   Loader2,
   type LucideIcon,
 } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
 import { buildSimpleWhatsAppLink } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
+import { submitContact } from "@/lib/submit-contact";
 import { useTranslations, useLocale } from "next-intl";
 
 /* ============================================================================
@@ -29,7 +31,7 @@ import { useTranslations, useLocale } from "next-intl";
  *    2. شبكة 2 أعمدة:
  *       - اليمين: {t("infoTitle")} (هاتف + بريد + عنوان + ساعات عمل)
  *                 + أزرار {t("whatsappBtn")} والهاتف
- *       - اليسار: نموذج تواصل (الاسم/البريد/الهاتف/الرسالة) → يفتح mailto
+ *       - اليسار: نموذج تواصل (الاسم/البريد/الهاتف/الرسالة) → يُرسل عبر /api/contact (Resend)
  *    3. خريطة إسطنبول (Google Maps iframe)
  * ============================================================================ */
 
@@ -46,7 +48,10 @@ export function ContactContent() {
   const formId = useId();
   const [formData, setFormData] = useState<FormData>(initialData);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
-  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [errorKey, setErrorKey] = useState<"errorNote" | "errorRate">("errorNote");
+  const [website, setWebsite] = useState(""); // honeypot
+  const startedAt = useRef(Date.now());
   const t = useTranslations("contact");
   const tNav = useTranslations("nav");
   const locale = useLocale();
@@ -65,7 +70,11 @@ export function ContactContent() {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = t("validationEmailInvalid");
     }
+    if (formData.phone.trim() && !/^[0-9+()\-.\s]{1,30}$/.test(formData.phone.trim())) {
+      newErrors.phone = t("validationPhoneInvalid");
+    }
     if (!formData.message.trim()) newErrors.message = t("validationMessageRequired");
+    else if (formData.message.trim().length < 5) newErrors.message = t("validationMessageShort");
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -75,24 +84,27 @@ export function ContactContent() {
     if (!validate()) return;
 
     setStatus("sending");
-    await new Promise((resolve) => setTimeout(resolve, 600));
-
-    const subject = t("emailSubject", { name: formData.name });
-    const body = t("emailBody", {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone || t("notProvided"),
-      message: formData.message,
+    const result = await submitContact({
+      kind: "contact",
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      message: formData.message.trim(),
+      locale,
+      website,
+      startedAt: startedAt.current,
     });
 
-    const mailtoLink = `mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoLink;
-
-    setStatus("sent");
-    setTimeout(() => {
-      setStatus("idle");
+    // النجاح يُعرض فقط بعد تأكيد الخادم أن الرسالة أُرسلت فعلاً.
+    if (result.ok) {
+      setStatus("sent");
       setFormData(initialData);
-    }, 5000);
+      setWebsite("");
+      startedAt.current = Date.now();
+    } else {
+      setErrorKey(result.reason === "rate_limited" ? "errorRate" : "errorNote");
+      setStatus("error");
+    }
   };
 
   return (
@@ -237,7 +249,31 @@ export function ContactContent() {
                 </div>
               )}
 
+              {status === "error" && (
+                <div role="alert" className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <div className="font-bold text-red-800 text-sm">{t("errorMsg")}</div>
+                    <div className="text-xs text-red-700 mt-1">{t(errorKey)}</div>
+                  </div>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Honeypot: مخفي عن البشر — الروبوتات فقط تملؤه */}
+                <div aria-hidden="true" className="absolute h-0 w-0 overflow-hidden opacity-0 pointer-events-none">
+                  <label htmlFor={`${formId}-website`}>Website</label>
+                  <input
+                    id={`${formId}-website`}
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                  />
+                </div>
+
                 <FieldInput id={`${formId}-name`} icon={User} label={t("fieldName")} required error={errors.name}>
                   <input
                     id={`${formId}-name`}
@@ -267,14 +303,16 @@ export function ContactContent() {
                   />
                 </FieldInput>
 
-                <FieldInput id={`${formId}-phone`} icon={Phone} label={t("fieldPhone")}>
+                <FieldInput id={`${formId}-phone`} icon={Phone} label={t("fieldPhone")} error={errors.phone}>
                   <input
                     id={`${formId}-phone`}
                     type="tel"
                     dir="ltr"
                     value={formData.phone}
                     onChange={(e) => updateField("phone", e.target.value)}
-                    className={cn(inputClasses(), "text-left")}
+                    aria-invalid={errors.phone ? true : undefined}
+                    aria-describedby={errors.phone ? `${formId}-phone-error` : undefined}
+                    className={cn(inputClasses(errors.phone), "text-left")}
                   />
                 </FieldInput>
 
